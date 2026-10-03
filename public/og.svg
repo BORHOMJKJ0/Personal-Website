@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <!--
+    Source for the Open Graph card. Edit this file, then run `npm run og`
+    to regenerate public/og.png (what the meta tags actually point at).
+  -->
+  <defs>
+    <pattern id="grid" width="72" height="72" patternUnits="userSpaceOnUse">
+      <path d="M72 0H0V72" fill="none" stroke="#1b2024" stroke-width="1" />
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="#0B0D0F" />
+  <rect width="1200" height="630" fill="url(#grid)" />
+  <rect x="0" y="0" width="1200" height="6" fill="#4FD8C4" />
+
+  <g font-family="Segoe UI, Arial, Helvetica, sans-serif">
+    <rect x="80" y="104" width="64" height="64" rx="14" fill="#4FD8C4" />
+    <text x="112" y="147" text-anchor="middle" font-size="26" font-weight="700" fill="#06201D">OB</text>
+
+    <text x="80" y="300" font-size="86" font-weight="700" fill="#ECEEF0">Omar Borhom</text>
+    <text x="80" y="366" font-size="36" font-weight="600" fill="#4FD8C4">
+      Backend-focused full-stack developer
+    </text>
+    <text x="80" y="424" font-size="27" fill="#A1A9B2">
+      Laravel &#183; React &#183; PyTorch &#183; Damascus, Syria
+    </text>
+
+    <text x="80" y="536" font-size="22" font-weight="500" fill="#878F98">
+      150+ REST endpoints &#160;&#160;/&#160;&#160; 20+ React components &#160;&#160;/&#160;&#160; 60+ engineered features
+    </text>
+  </g>
+</svg>

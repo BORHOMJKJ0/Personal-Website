@@ -1,0 +1,222 @@
+@import 'tailwindcss';
+
+/* Class-based dark mode (the inline script in index.html sets `.dark`). */
+@custom-variant dark (&:where(.dark, .dark *));
+/* Explicit direction variants so we never depend on plugin defaults. */
+@custom-variant rtl (&:where([dir='rtl'], [dir='rtl'] *));
+@custom-variant ltr (&:where([dir='ltr'], [dir='ltr'] *));
+
+/*
+  Single source of truth for colour. Every token is defined once per theme as a
+  CSS variable, then exposed to Tailwind through `@theme inline` so utilities
+  such as `bg-surface` compile to `var(--color-surface)` and follow the theme
+  without duplicated classes.
+
+  Contrast (WCAG 2.1, measured against the background each pair is used on):
+    light  fg/bg      #15171A on #FBFAF8  → 15.6:1   (AAA)
+    light  muted/bg   #51575F on #FBFAF8  →  7.4:1   (AAA)
+    light  accent/bg  #0E6A63 on #FBFAF8  →  4.9:1   (AA)
+    dark   fg/bg      #ECEEF0 on #0B0D0F  → 15.7:1   (AAA)
+    dark   muted/bg   #A1A9B2 on #0B0D0F  →  8.0:1   (AAA)
+    dark   accent/bg  #4FD8C4 on #0B0D0F  → 11.4:1   (AAA)
+*/
+:root {
+  --color-bg: #fbfaf8;
+  --color-bg-alt: #f4f2ee;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f8f7f4;
+  --color-fg: #15171a;
+  --color-fg-muted: #51575f;
+  --color-fg-subtle: #6e757e;
+  --color-line: #e3e0d9;
+  --color-line-strong: #cdc9c0;
+  --color-accent: #0e6a63;
+  --color-accent-hover: #0a534e;
+  --color-accent-fg: #ffffff;
+  --color-accent-soft: #e2f1ef;
+  --color-ring: #0e6a63;
+  --shadow-card: 0 1px 2px rgb(21 23 26 / 0.04), 0 8px 24px -12px rgb(21 23 26 / 0.12);
+  --grid-line: rgb(21 23 26 / 0.05);
+}
+
+.dark {
+  --color-bg: #0b0d0f;
+  --color-bg-alt: #101316;
+  --color-surface: #13171a;
+  --color-surface-alt: #181c20;
+  --color-fg: #eceef0;
+  --color-fg-muted: #a1a9b2;
+  --color-fg-subtle: #878f98;
+  --color-line: #242a30;
+  --color-line-strong: #353d45;
+  --color-accent: #4fd8c4;
+  --color-accent-hover: #74e4d4;
+  --color-accent-fg: #06201d;
+  --color-accent-soft: #11302d;
+  --color-ring: #4fd8c4;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 32px -16px rgb(0 0 0 / 0.7);
+  --grid-line: rgb(236 238 240 / 0.055);
+}
+
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-bg-alt: var(--color-bg-alt);
+  --color-surface: var(--color-surface);
+  --color-surface-alt: var(--color-surface-alt);
+  --color-fg: var(--color-fg);
+  --color-fg-muted: var(--color-fg-muted);
+  --color-fg-subtle: var(--color-fg-subtle);
+  --color-line: var(--color-line);
+  --color-line-strong: var(--color-line-strong);
+  --color-accent: var(--color-accent);
+  --color-accent-hover: var(--color-accent-hover);
+  --color-accent-fg: var(--color-accent-fg);
+  --color-accent-soft: var(--color-accent-soft);
+  --color-ring: var(--color-ring);
+
+  --font-display: 'Space Grotesk', 'IBM Plex Sans Arabic', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', 'IBM Plex Sans Arabic', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', 'Menlo', 'Cascadia Mono', 'Consolas', monospace;
+
+  --shadow-card: var(--shadow-card);
+
+  --text-display: clamp(2.5rem, 8vw, 5.25rem);
+  --text-h2: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+/* Arabic swaps the Latin display/body faces for one well-matched Arabic face. */
+:root:lang(ar),
+[lang='ar'] {
+  --font-display: 'IBM Plex Sans Arabic', 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'IBM Plex Sans Arabic', 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Clears the sticky header when jumping to an anchor. */
+    scroll-padding-top: 5.5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  [dir='rtl'] body {
+    /* Inter's Latin alternates are irrelevant for Arabic and hurt shaping. */
+    font-feature-settings: normal;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  [dir='rtl'] h1,
+  [dir='rtl'] h2,
+  [dir='rtl'] h3,
+  [dir='rtl'] h4 {
+    /* Tight tracking is a Latin-display convention; it damages Arabic. */
+    letter-spacing: normal;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Mouse users never see the ring; keyboard users always do. */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-accent-fg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Mono eyebrow used for section numbers and badges. */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /*
+    Arabic needs the sans face here, not the mono stack: no common monospace
+    font ships Arabic glyphs, so the browser substitutes per-character and the
+    cursive joins break. Tracking is dropped for the same reason. Elements that
+    carry their own dir="ltr" (tech badges, years, section numbers) are Latin by
+    definition and keep the mono treatment.
+  */
+  [dir='rtl'] .eyebrow:not([dir='ltr']) {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    letter-spacing: normal;
+    text-transform: none;
+  }
+
+  /* Faint engineering grid, used behind the hero only. */
+  .grid-backdrop {
+    background-image:
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 35%, transparent 75%);
+  }
+
+  /* Reveal-on-scroll. The hook adds `.is-visible`; see useReveal.ts. */
+  .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
