@@ -12,6 +12,18 @@ site states a fact, number or achievement that is not in that PDF, with two
 deliberate, documented exceptions (see *Content provenance* below). Do not add
 claims that the CV does not support.
 
+## Three things that must not change
+
+1. **Vercel is the only deploy target.** Live at <https://omar-borhom.vercel.app>;
+   push to `main` and it deploys. There is no GitHub Actions workflow and no
+   `.github/` directory — a GitHub Pages workflow used to exist and was removed
+   because Pages was never enabled, so every run failed at
+   `actions/configure-pages`. Do not re-add one.
+2. **The Vite `base` is `'/'`, hard-coded.** It is deliberately not read from an
+   env var any more. A sub-path base (`/Personal-Website/`) breaks every asset
+   URL on Vercel.
+3. **English is the default language.** See *Language* below.
+
 ## Stack
 
 | Choice | Version | Why |
@@ -42,11 +54,23 @@ DOM* rather than recomputing — that is what keeps the first paint flash-free.
 If you change the detection logic, change it in **both** places or they will
 disagree.
 
-**Language resolution order** (also duplicated in both places):
-`?lang=` query → `localStorage` → `navigator.language` → `en`.
+**Language: English is the default, and the browser locale is never consulted.**
+Resolution order, duplicated in `detectLanguage()` (`src/i18n/index.ts`) and the
+inline script in `index.html`:
+
+`?lang=` query → `localStorage` → `'en'`
+
+Arabic is shown only when it is explicitly asked for — the header toggle, or a
+`?lang=ar` URL — and the toggle choice persists in `localStorage`. An earlier
+version fell back to `navigator.language`, which meant Arabic-locale visitors
+landed on the Arabic site; that was removed on purpose, so do not reintroduce a
+`navigator.language` check. `index.html` ships `lang="en" dir="ltr"` and the
+inline script only changes it when one of the two explicit signals is present.
+
 The `?lang=ar` query param exists so each language has a real, shareable URL
 for the hreflang alternates; `useLanguage` keeps it in sync via
-`history.replaceState`.
+`history.replaceState`. `vercel.json` also redirects `/ar` → `/?lang=ar` and
+`/en` → `/` so those short paths work.
 
 **Colour is defined once per theme** as CSS variables on `:root` and `.dark`
 in `src/index.css`, then exposed to Tailwind with `@theme inline` so
@@ -93,8 +117,9 @@ These are easy to break and were each fixed once already:
 - **`npm run build` runs `prebuild`**, which regenerates `public/sitemap.xml`
   and `public/robots.txt` from `SITE_URL` in `src/data/site.ts`. One value,
   one place.
-- **`assetUrl()`** (`src/lib/assets.ts`) must be used for anything in `/public`
-  referenced from React, so GitHub Pages subpath deploys keep working.
+- **`assetUrl()`** (`src/lib/assets.ts`) is how anything in `/public` is
+  referenced from React. With `base: '/'` it only normalises the leading slash,
+  but routing through `BASE_URL` keeps the links honest if the base ever moves.
 
 ## Content provenance
 
@@ -110,13 +135,20 @@ Everything is from `cv.pdf` except:
    the School Management System's year, and whether the stock dataset is
    balanced.
 
-Unresolved items are marked `TODO:` in the source — currently `SITE_URL` in
-`src/data/site.ts` and `cv.ar` in `src/data/profile.ts`.
+The Arabic rendering of the name is **عمر برهم**, as corrected by the owner. Keep
+it consistent across `hero.name`, `nav.brandAria`, `meta.title` and
+`footer.builtBy` in `ar.json`.
+
+One `TODO:` remains in the source: `cv.ar` in `src/data/profile.ts`. It is
+`null`, which hides the Arabic CV button rather than linking a missing file.
+Set it to `'cv-ar.pdf'` once that file exists in `/public`.
 
 ## Verifying changes
 
 ```bash
-npm run build          # type-check + build; must pass before finishing
+npm ci
+npm run build          # type-check + build; must pass with no warnings
+npm run typecheck
 npm run preview        # then check EN/AR x light/dark, and a project modal
 ```
 
@@ -124,3 +156,9 @@ Worth re-checking after any layout change: no horizontal scroll at 390px wide,
 WCAG AA contrast in both themes, the modal's top edge reachable when its
 content is taller than the viewport, and Escape closing the modal and returning
 focus to the card that opened it.
+
+For the language default specifically, a real check means overriding
+`navigator.language` to `ar-SY` *before* page scripts run (CDP
+`Page.addScriptToEvaluateOnNewDocument`) and confirming `<html>` still comes up
+`lang="en" dir="ltr"`. Setting a CDP locale override alone does not change
+`navigator.language` and will silently pass.

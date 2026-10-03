@@ -17,16 +17,20 @@ export function isLanguage(value: unknown): value is Language {
   return typeof value === 'string' && (SUPPORTED_LANGUAGES as readonly string[]).includes(value);
 }
 
+export const DEFAULT_LANGUAGE: Language = 'en';
+
 /**
- * Resolution order, matching the inline script in index.html so the server
+ * Resolution order, matching the inline script in index.html so the static
  * markup and the React tree never disagree about language:
  *   1. ?lang= query param (also what the hreflang alternates point at)
- *   2. localStorage
- *   3. navigator language
- *   4. 'en'
+ *   2. localStorage — a choice the visitor made with the toggle
+ *   3. 'en'
+ *
+ * The browser's own language is deliberately NOT consulted. English is the
+ * default for every first visit; Arabic appears only when it is asked for.
  */
 export function detectLanguage(): Language {
-  if (typeof window === 'undefined') return 'en';
+  if (typeof window === 'undefined') return DEFAULT_LANGUAGE;
 
   const fromQuery = new URLSearchParams(window.location.search).get('lang');
   if (isLanguage(fromQuery)) return fromQuery;
@@ -35,11 +39,10 @@ export function detectLanguage(): Language {
     const stored = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
     if (isLanguage(stored)) return stored;
   } catch {
-    // Blocked storage (private mode): fall through to the browser language.
+    // Blocked storage (private mode): fall through to the default.
   }
 
-  const navigatorLanguage = window.navigator.languages?.[0] ?? window.navigator.language ?? 'en';
-  return /^ar\b/i.test(navigatorLanguage) ? 'ar' : 'en';
+  return DEFAULT_LANGUAGE;
 }
 
 void i18n.use(initReactI18next).init({

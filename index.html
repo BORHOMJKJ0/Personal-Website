@@ -59,17 +59,14 @@
           root.classList.toggle('dark', theme === 'dark');
           root.style.colorScheme = theme;
 
+          // English is the default. The browser language is deliberately not
+          // consulted — Arabic is shown only when explicitly requested, via
+          // the ?lang= param or a stored toggle choice. Keep this in step with
+          // detectLanguage() in src/i18n/index.ts.
           var qs = new URLSearchParams(window.location.search).get('lang');
           var saved = localStorage.getItem('lang');
-          var nav = (navigator.languages && navigator.languages[0]) || navigator.language || 'en';
           var lang =
-            qs === 'ar' || qs === 'en'
-              ? qs
-              : saved === 'ar' || saved === 'en'
-                ? saved
-                : /^ar\b/i.test(nav)
-                  ? 'ar'
-                  : 'en';
+            qs === 'ar' || qs === 'en' ? qs : saved === 'ar' || saved === 'en' ? saved : 'en';
           root.lang = lang;
           root.dir = lang === 'ar' ? 'rtl' : 'ltr';
         } catch (e) {

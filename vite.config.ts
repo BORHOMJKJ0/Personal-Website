@@ -3,10 +3,11 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
-// `VITE_BASE` lets the same source target both Vercel ("/") and
-// GitHub Pages ("/<repo-name>/"). See README → Deploy.
+// The site is served from the root of omar-borhom.vercel.app, so the base is
+// always "/". Do not make this configurable: a sub-path base breaks every
+// asset URL on Vercel.
 export default defineConfig({
-  base: process.env.VITE_BASE ?? '/',
+  base: '/',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },

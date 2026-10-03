@@ -3,8 +3,8 @@
 A bilingual (English / Arabic) portfolio built with React, Vite, TypeScript and
 Tailwind CSS. Static output, no backend, no analytics.
 
-- Full RTL support for Arabic, with a language toggle that persists
-- Dark / light themes that default to the system preference, with no flash on load
+- English by default; Arabic with full RTL when chosen, and the choice persists
+- Dark / light themes that follow the system preference until overridden, with no flash on load
 - All content lives in a data layer, so editing the site never means touching a component
 - Per-language SEO: `<title>`, meta description, Open Graph, hreflang, sitemap, JSON-LD
 
@@ -17,14 +17,14 @@ npm install
 npm run dev      # http://localhost:5173
 ```
 
-| Script             | What it does                                              |
-| ------------------ | --------------------------------------------------------- |
-| `npm run dev`      | Dev server with hot reload                                 |
-| `npm run build`    | Type-check, regenerate sitemap/robots, build to `dist/`    |
-| `npm run preview`  | Serve the production build locally                         |
-| `npm run typecheck`| Type-check only                                            |
-| `npm run og`       | Re-render `public/og.svg` to `public/og.png`               |
-| `npm run sitemap`  | Regenerate `public/sitemap.xml` and `public/robots.txt`    |
+| Script              | What it does                                              |
+| ------------------- | --------------------------------------------------------- |
+| `npm run dev`       | Dev server with hot reload                                |
+| `npm run build`     | Type-check, regenerate sitemap/robots, build to `dist/`   |
+| `npm run preview`   | Serve the production build locally                        |
+| `npm run typecheck` | Type-check only                                           |
+| `npm run og`        | Re-render `public/og.svg` to `public/og.png`              |
+| `npm run sitemap`   | Regenerate `public/sitemap.xml` and `public/robots.txt`   |
 
 ---
 
@@ -37,7 +37,7 @@ Everything a visitor reads is in two places. **Components contain no copy.**
 Every string on the site. The two files have identical key structures; if you
 add a key to one, add it to the other.
 
-```
+```text
 meta.*          Page title and description, per language
 nav.*           Header links
 hero.*          Headline, intro, button labels
@@ -59,12 +59,12 @@ node -e "const f=n=>require('./src/i18n/locales/'+n+'.json');const p=(o,b='')=>O
 
 ### 2. Structured data — `src/data/`
 
-| File         | Holds                                                               |
-| ------------ | ------------------------------------------------------------------- |
-| `site.ts`    | `SITE_URL` — the deployed domain. Change this first after deploying. |
-| `profile.ts` | Email, phone, GitHub/GitLab/LinkedIn URLs, CV filenames, hero stats  |
-| `projects.ts`| Project ids, years, tech badges, repo links, metrics                |
-| `skills.ts`  | Skill groups and their items, plus the section order used by the nav |
+| File          | Holds                                                                |
+| ------------- | -------------------------------------------------------------------- |
+| `site.ts`     | `SITE_URL` — the canonical origin, <https://omar-borhom.vercel.app>  |
+| `profile.ts`  | Email, phone, GitHub/GitLab/LinkedIn URLs, CV filenames, hero stats  |
+| `projects.ts` | Project ids, years, tech badges, repo links, metrics                 |
+| `skills.ts`   | Skill groups and their items, plus the section order used by the nav |
 
 ### Adding a project
 
@@ -78,7 +78,6 @@ node -e "const f=n=>require('./src/i18n/locales/'+n+'.json');const p=(o,b='')=>O
      stack: ['Laravel', 'MySQL'],
      links: [{ kind: 'github', url: 'https://github.com/…' }],
      metrics: [{ id: 'endpoints', value: '40+' }],  // optional
-     highlightCount: 4,
    }
    ```
 
@@ -123,50 +122,49 @@ render SVG, so `og.png` is the file the meta tags point at.
 
 ## Deploy
 
-### Vercel (configured)
+**Vercel is the only deploy target.** The site is live at
+<https://omar-borhom.vercel.app>.
 
-[vercel.json](vercel.json) is already set up — framework preset, build command,
-output directory and cache headers.
-
-1. Push the repository to GitHub.
-2. In Vercel: **Add New → Project**, import the repository, and deploy. No
-   settings to change; `vercel.json` supplies them.
-3. Copy the deployed URL into `SITE_URL` in
-   [src/data/site.ts](src/data/site.ts), then redeploy. This one value drives
-   the canonical tag, the hreflang alternates, the Open Graph URL, the JSON-LD
-   and `sitemap.xml`.
-
-Or from the CLI:
+### Pushing a change
 
 ```bash
-npm i -g vercel
-vercel          # preview deployment
-vercel --prod   # production
+git add -A
+git commit -m "Describe the change"
+git push            # -> Vercel builds and deploys automatically
 ```
 
-### GitHub Pages (alternative)
+Pushing to `main` deploys to production. Pushing any other branch, or opening
+a pull request, gets a Vercel preview URL. There is no GitHub Actions
+workflow and nothing to run by hand.
 
-[.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml) is
-included but inactive until you enable Pages.
+### How it is configured
 
-1. Repository **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-2. Push to `main`. The workflow builds with
-   `VITE_BASE=/<repo-name>/` so assets resolve under the project-site subpath.
-   For a user site (`<user>.github.io`), change that env value to `/`.
-3. Set `SITE_URL` in [src/data/site.ts](src/data/site.ts) to
-   `https://<user>.github.io/<repo-name>` and push again.
+[vercel.json](vercel.json) supplies everything, so there is nothing to set in
+the Vercel dashboard:
 
-To build a subpath bundle locally:
+- `framework: vite`, `buildCommand: npm run build`, `outputDirectory: dist`
+- an SPA rewrite, so a direct hit on any path (`/projects/x`, a stale
+  bookmark) serves the app instead of a 404
+- `/ar` and `/en` redirect to `/?lang=ar` and `/`, which is the URL scheme the
+  hreflang tags use
+- a one-year immutable cache on `/assets/*` (filenames are content-hashed) and
+  basic security headers
 
-```bash
-VITE_BASE=/my-repo/ npm run build
-```
+The Vite `base` is `'/'` and must stay that way — a sub-path base breaks every
+asset URL on Vercel.
+
+### Changing the domain
+
+`SITE_URL` in [src/data/site.ts](src/data/site.ts) is the single source for the
+canonical tag, the hreflang alternates, the Open Graph and Twitter URLs, the
+JSON-LD, and `sitemap.xml` / `robots.txt` (regenerated on every build). Change
+it there and nowhere else.
 
 ---
 
 ## Project layout
 
-```
+```text
 src/
 ├── App.tsx                 Section order, SEO effect
 ├── main.tsx                Entry point
@@ -181,7 +179,7 @@ src/
 ├── i18n/                   i18next setup and the locale JSON files
 └── lib/
     ├── seo.ts              Per-language head tags and JSON-LD
-    └── assets.ts           Base-path-aware /public URLs
+    └── assets.ts           URLs for files in /public
 public/                     cv.pdf, og.png/svg, favicon, robots.txt, sitemap.xml
 scripts/                    Sitemap and OG image generators
 ```
@@ -190,6 +188,12 @@ scripts/                    Sitemap and OG image generators
 
 ## Notes
 
+- **Language**: English is the default on every first visit. The browser's own
+  language is deliberately not consulted — Arabic appears only when the visitor
+  picks it with the header toggle or arrives on `?lang=ar`, and that choice is
+  then kept in `localStorage`. The resolution order is implemented twice, in
+  `detectLanguage()` ([src/i18n/index.ts](src/i18n/index.ts)) and in the inline
+  script in [index.html](index.html); change both together or they disagree.
 - **Browser support**: the build targets ES2020. Logical CSS properties
   (`ms-`, `me-`, `ps-`, `pe-`, `start-`, `end-`) are used throughout instead of
   left/right, which is what makes the RTL mirroring automatic.
