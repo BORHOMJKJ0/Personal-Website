@@ -117,6 +117,16 @@ These are easy to break and were each fixed once already:
 - **`npm run build` runs `prebuild`**, which regenerates `public/sitemap.xml`
   and `public/robots.txt` from `SITE_URL` in `src/data/site.ts`. One value,
   one place.
+- **Never set `cleanUrls: true` in `vercel.json`.** It turns `/index.html` into
+  a 308 redirect to `/`, which makes the SPA rewrite's destination
+  unresolvable, and every deep link 404s with `X-Vercel-Error: NOT_FOUND`.
+  It buys nothing for a single-page app. Also note `vercel.json` is schema-
+  validated and rejects unknown keys, so it cannot carry `_comment` fields —
+  notes about it belong here.
+- **Verify routing against the deployed site, not `vite preview`.** Preview has
+  its own SPA fallback and happily serves deep links even when the Vercel
+  rewrite is broken. The cleanUrls bug above passed locally and only showed up
+  on a live `curl`.
 - **`assetUrl()`** (`src/lib/assets.ts`) is how anything in `/public` is
   referenced from React. With `base: '/'` it only normalises the leading slash,
   but routing through `BASE_URL` keeps the links honest if the base ever moves.
