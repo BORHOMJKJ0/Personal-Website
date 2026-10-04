@@ -26,7 +26,7 @@
     "closeDialog": "Close project details"
   },
   "hero": {
-    "availability": "Open to junior backend & software engineering roles",
+    "availability": "Open to backend & software engineering roles",
     "name": "Omar Borhom",
     "role": "Backend-focused full-stack developer",
     "roleLong": "Laravel & React",
@@ -49,7 +49,7 @@
     "title": "Backend engineering, with an AI degree behind it",
     "p1": "I am a final-year Artificial Intelligence Engineering student at Damascus University and a backend-focused full-stack developer, with strong experience in Laravel on the backend and React on the frontend.",
     "p2": "I design scalable RESTful APIs with JWT authentication — including refresh token flow — and role-based access control (RBAC). I have also built interactive dashboards and designed deep learning ensemble architectures for financial time-series prediction.",
-    "p3": "A competitive programming background as an ICPC participant keeps my analytical and problem-solving work sharp. I am looking for a junior backend or software engineering role where I can contribute to scalable system design and real-world AI applications.",
+    "p3": "A competitive programming background as an ICPC participant keeps my analytical and problem-solving work sharp. I am looking for a backend or software engineering role where I can contribute to scalable system design and real-world AI applications.",
     "factsTitle": "At a glance",
     "facts": {
       "locationLabel": "Based in",
@@ -252,7 +252,7 @@
   "contact": {
     "eyebrow": "Contact",
     "title": "Let's talk",
-    "subtitle": "I am looking for a junior backend or software engineering role. The fastest way to reach me is email.",
+    "subtitle": "I am looking for a backend or software engineering role. The fastest way to reach me is email.",
     "emailLabel": "Email",
     "phoneLabel": "Phone",
     "locationLabel": "Location",
