@@ -1,0 +1,16 @@
+{
+  "name": "capture-projects",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Asset pipeline for the portfolio: drives Playwright to screenshot and record project UIs, converts output to webp/webm/mp4. Deliberately isolated from the site's own dependencies.",
+  "scripts": {
+    "capture": "node capture.mjs",
+    "logos": "node logos.mjs",
+    "visuals": "node visuals.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.48.0",
+    "sharp": "^0.35.5"
+  }
+}

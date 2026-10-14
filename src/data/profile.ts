@@ -2,6 +2,7 @@
  * Language-neutral facts taken verbatim from cv.pdf.
  * Anything that needs translating lives in src/i18n/locales/*.json instead.
  */
+import { projects } from './projects';
 export const profile = {
   email: 'hborhom89@gmail.com',
   phone: '+963 949 100 479',
@@ -25,10 +26,19 @@ export const profile = {
   },
 } as const;
 
-/** Numbers shown in the hero strip. Every value is stated in the CV. */
+/**
+ * The counters under the hero. Every number is either stated in the CV or
+ * counted from this repository's own data — nothing is estimated.
+ *
+ * `to` is the number the counter animates to; `suffix` is appended verbatim so
+ * "150+" counts to 150 and keeps the plus.
+ */
 export const heroStats = [
-  { id: 'endpoints', value: '150+' },
-  { id: 'components', value: '20+' },
-  { id: 'indicators', value: '60+' },
-  { id: 'architectures', value: '3' },
+  { id: 'endpoints', to: 150, suffix: '+' },      // CV: "150+ RESTful API endpoints"
+  { id: 'components', to: 20, suffix: '+' },      // CV: "20+ reusable React components"
+  { id: 'indicators', to: 60, suffix: '+' },      // CV: "60+ technical indicators"
+  { id: 'projects', to: projects.length, suffix: '' }, // counted from src/data/projects.ts
 ] as const;
+
+/** Photo in the hero. Replace public/images/profile.jpg to change it. */
+export const profilePhoto = 'images/profile.jpg';

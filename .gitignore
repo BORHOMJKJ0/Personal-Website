@@ -10,3 +10,9 @@ dist-ssr
 .idea
 tsconfig.tsbuildinfo
 *.tsbuildinfo
+
+# IDE local history
+.lh/
+
+# Capture tooling deps (not part of the site build)
+scripts/capture-projects/node_modules/

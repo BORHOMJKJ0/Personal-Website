@@ -1,14 +1,15 @@
 import { useEffect, useRef } from 'react';
-import { ArrowUpRight, Lock, X } from 'lucide-react';
+import { ExternalLink, Lock, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { Project } from '@/data/projects';
+import { assetUrl } from '@/lib/assets';
 import { Badge } from './Badge';
 import { GitHubIcon, GitLabIcon } from './BrandIcons';
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"]), input, select, textarea';
 
-const LINK_ICON = { github: GitHubIcon, gitlab: GitLabIcon, demo: ArrowUpRight } as const;
+const LINK_ICON = { github: GitHubIcon, gitlab: GitLabIcon, demo: ExternalLink } as const;
 
 export function ProjectModal({
   project,
@@ -124,6 +125,18 @@ export function ProjectModal({
         </div>
 
         <div className="space-y-8 px-5 py-7 sm:px-8 sm:py-8">
+          {project.media ? (
+            <img
+              src={assetUrl(project.media.cover)}
+              alt={t('projects.coverAlt', { title: t(`${base}.title`) })}
+              width={1280}
+              height={800}
+              loading="lazy"
+              decoding="async"
+              className="w-full rounded-xl border border-line"
+            />
+          ) : null}
+
           <p className="text-base leading-relaxed text-fg-muted sm:text-lg">
             {t(`${base}.tagline`)}
           </p>
@@ -169,6 +182,27 @@ export function ProjectModal({
                       aria-hidden="true"
                     />
                     <span>{line}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          {project.media?.shots?.length ? (
+            <div>
+              <h3 className="eyebrow text-fg-subtle">{t('projects.galleryLabel')}</h3>
+              <ul className="mt-3 grid gap-3 sm:grid-cols-2">
+                {project.media.shots.map((shot, i) => (
+                  <li key={shot}>
+                    <img
+                      src={assetUrl(shot)}
+                      alt={t('projects.coverAlt', { title: `${t(`${base}.title`)} ${i + 2}` })}
+                      width={1280}
+                      height={800}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full rounded-xl border border-line"
+                    />
                   </li>
                 ))}
               </ul>

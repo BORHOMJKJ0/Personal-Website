@@ -7,6 +7,7 @@
   },
   "nav": {
     "about": "About",
+    "services": "Services",
     "projects": "Projects",
     "skills": "Skills",
     "experience": "Experience",
@@ -36,13 +37,20 @@
     "ctaContact": "Get in touch",
     "ctaCvEn": "Download CV (EN)",
     "ctaCvAr": "Download CV (AR)",
-    "statsLabel": "Selected numbers from my work"
+    "statsLabel": "Selected numbers from my work",
+    "photoAlt": "Omar Borhom",
+    "typingPhrases": [
+      "Backend-focused full-stack developer",
+      "Laravel & REST APIs",
+      "React dashboards",
+      "Deep learning with PyTorch"
+    ]
   },
   "stats": {
     "endpoints": "REST endpoints shipped",
     "components": "React components built",
     "indicators": "Technical indicators engineered",
-    "architectures": "Neural architectures ensembled"
+    "projects": "Projects shipped"
   },
   "about": {
     "eyebrow": "About",
@@ -64,10 +72,33 @@
       "cpValue": "ICPC participant"
     }
   },
+  "services": {
+    "eyebrow": "Services",
+    "title": "What I build",
+    "subtitle": "Four things I do day to day, and the tools I reach for in each.",
+    "items": {
+      "backend": {
+        "title": "Backend & API development",
+        "summary": "Scalable REST APIs in Laravel, with JWT authentication, refresh token flow and role-based access control."
+      },
+      "fullstack": {
+        "title": "Full-stack web apps",
+        "summary": "React frontends on top of Laravel APIs — dashboards, protected routes and role-based interfaces."
+      },
+      "ai": {
+        "title": "AI & deep learning",
+        "summary": "PyTorch models for classification and time-series, from feature engineering through to evaluation."
+      },
+      "data": {
+        "title": "Database design & optimisation",
+        "summary": "MySQL and PostgreSQL schema design, query tuning, and caching and queues with Redis."
+      }
+    }
+  },
   "projects": {
     "eyebrow": "Projects",
     "title": "Selected work",
-    "subtitle": "Four projects that show the range: a client platform, production APIs, a dashboard frontend, and a deep learning ensemble.",
+    "subtitle": "Eight projects, newest first — client platforms, production APIs, dashboards and deep learning.",
     "viewDetails": "View details",
     "privateRepo": "Private repository",
     "sourceOnRequest": "Source code available upon request",
@@ -81,8 +112,6 @@
     "highlightsLabel": "Highlights",
     "stackLabel": "Tech stack",
     "noteLabel": "Context",
-    "moreTitle": "More projects",
-    "moreSubtitle": "Public repositories on my GitHub account.",
     "metrics": {
       "endpoints": "REST endpoints",
       "apps": "Mobile apps served",
@@ -173,7 +202,10 @@
         "title": "Automata — Document Automation",
         "tagline": "A Laravel 10 tool that browses Dropbox shared folders, extracts structured data from PDFs, updates Excel spreadsheets and reports results to Bitrix24."
       }
-    }
+    },
+    "featuredBadge": "Featured",
+    "coverAlt": "{{title}} — screenshot",
+    "galleryLabel": "More screens"
   },
   "skills": {
     "eyebrow": "Skills",
@@ -217,19 +249,22 @@
         "role": "Technical Team Volunteer",
         "org": "Faculty of IT Engineering",
         "period": "2024 — 2025",
-        "detail": "Contributed to technical initiatives and student support activities."
+        "detail": "Contributed to technical initiatives and student support activities.",
+        "logo": "faculty"
       },
       {
         "role": "Student Union Volunteer",
         "org": "Faculty of IT Engineering",
         "period": "2025 — Present",
-        "detail": "Participated in student technical and organisational activities."
+        "detail": "Participated in student technical and organisational activities.",
+        "logo": "union"
       },
       {
         "role": "Volunteer & Trainee",
         "org": "MAPS Organization",
         "period": "",
-        "detail": "Participated in workshops and technology-related initiatives."
+        "detail": "Participated in workshops and technology-related initiatives.",
+        "logo": "maps"
       }
     ]
   },

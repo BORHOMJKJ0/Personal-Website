@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Trip — ride-sharing platform API</title>
+    <link rel="stylesheet" href="./diagram.css" />
+    <style>
+      .layers {
+        display: grid;
+        grid-template-columns: 0.9fr auto 1.05fr auto 1fr;
+        align-items: stretch;
+        gap: 14px;
+        flex: 1;
+      }
+      .stack {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        justify-content: center;
+      }
+      .stack > .node {
+        flex: 0 0 auto;
+      }
+      .arrow {
+        align-self: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <p class="eyebrow">Backend architecture · Laravel 10</p>
+      <h1>Trip — Ride-Sharing Platform API</h1>
+      <p class="sub">
+        A request path kept in separate layers so authentication, domain logic and persistence never
+        collapse into one controller.
+      </p>
+    </div>
+
+    <div class="layers">
+      <div class="stack">
+        <div class="node">
+          <div class="label">Clients</div>
+          <div class="name">Rider &amp; driver apps</div>
+          <div class="detail">Mobile clients over REST</div>
+        </div>
+        <div class="node accent">
+          <div class="label">Gate</div>
+          <div class="name">JWT + Laravel Sanctum</div>
+          <div class="detail">OTP verification over SMS</div>
+        </div>
+      </div>
+
+      <div class="arrow">→</div>
+
+      <div class="stack">
+        <div class="node">
+          <div class="label">Layer 1</div>
+          <div class="name">API Resources</div>
+          <div class="detail">Response shaping and versioned payloads</div>
+        </div>
+        <div class="node">
+          <div class="label">Layer 2</div>
+          <div class="name">Services</div>
+          <div class="detail">Trip lifecycle, matching, fare rules</div>
+        </div>
+        <div class="node">
+          <div class="label">Layer 3</div>
+          <div class="name">Repositories</div>
+          <div class="detail">Persistence boundary</div>
+        </div>
+      </div>
+
+      <div class="arrow">→</div>
+
+      <div class="stack">
+        <div class="node">
+          <div class="label">State</div>
+          <div class="name">Supabase · PostgreSQL</div>
+          <div class="detail">Real-time driver location and geospatial queries</div>
+        </div>
+        <div class="node">
+          <div class="label">Push</div>
+          <div class="name">Firebase FCM</div>
+          <div class="detail">kreait/laravel-firebase</div>
+        </div>
+        <div class="node">
+          <div class="label">Performance</div>
+          <div class="name">Redis</div>
+          <div class="detail">Caching and queued jobs</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chips">
+      <span class="chip">Users</span>
+      <span class="chip">Drivers</span>
+      <span class="chip">Trips</span>
+      <span class="chip">Vehicles</span>
+      <span class="chip">Freelance / contract</span>
+      <span class="chip">Private client project</span>
+    </div>
+  </body>
+</html>

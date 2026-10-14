@@ -8,6 +8,7 @@ import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
 import { Projects } from '@/components/Projects';
+import { Services } from '@/components/Services';
 import { Skills } from '@/components/Skills';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useTheme } from '@/hooks/useTheme';
@@ -50,11 +51,12 @@ export default function App() {
       <main id="main">
         <Hero />
         <About index={1} />
-        <Projects index={2} />
-        <Skills index={3} />
-        <Experience index={4} />
-        <Education index={5} />
-        <Contact index={6} />
+        <Services index={2} />
+        <Projects index={3} />
+        <Skills index={4} />
+        <Experience index={5} />
+        <Education index={6} />
+        <Contact index={7} />
       </main>
 
       <Footer />

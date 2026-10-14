@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>JKJMiniNN — test run</title>
+    <link rel="stylesheet" href="./diagram.css" />
+    <style>
+      .split {
+        display: grid;
+        grid-template-columns: 1fr 1.15fr;
+        gap: 20px;
+        flex: 1;
+        align-items: stretch;
+      }
+      .term {
+        background: #0b0d0f;
+        border: 1px solid #242a30;
+        border-radius: 14px;
+        padding: 0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .term .bar {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 11px 14px;
+        border-bottom: 1px solid #242a30;
+      }
+      .term .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #353d45;
+      }
+      .term .path {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: #878f98;
+        margin-inline-start: 8px;
+      }
+      .term pre {
+        font-family: var(--mono);
+        font-size: 12.5px;
+        line-height: 1.72;
+        color: #a1a9b2;
+        padding: 16px 18px;
+        margin: 0;
+        white-space: pre;
+      }
+      .term .cmd {
+        color: #eceef0;
+      }
+      .term .ok {
+        color: #4fd8c4;
+      }
+      .term .num {
+        color: #eceef0;
+      }
+      .pieces {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        justify-content: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <p class="eyebrow">Neural network library from scratch · NumPy</p>
+      <h1>JKJMiniNN</h1>
+      <p class="sub">
+        Layers, losses and optimisers written from first principles — forward and backward passes
+        implemented by hand, with a test suite that trains real datasets end to end.
+      </p>
+    </div>
+
+    <div class="split">
+      <div class="pieces">
+        <div class="node">
+          <div class="label">Core</div>
+          <div class="name">Layer base class</div>
+          <div class="detail">Abstract forward / backward contract every layer implements</div>
+        </div>
+        <div class="node">
+          <div class="label">Layers</div>
+          <div class="name">Dense, activations</div>
+          <div class="detail">Weight and bias gradients derived by hand</div>
+        </div>
+        <div class="node">
+          <div class="label">Training</div>
+          <div class="name">Losses · optimisers</div>
+          <div class="detail">Backprop loop over mini-batches</div>
+        </div>
+      </div>
+
+      <div class="term">
+        <div class="bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="path">JKJMiniNN — python tests/run_all_tests.py</span>
+        </div>
+        <pre><span class="cmd">$ python tests/run_all_tests.py</span>
+
+Running: Iris classification test
+  Epoch 100/100 — Loss: <span class="num">0.1175</span>  Test Acc: <span class="num">1.0000</span>
+  test_iris.py                 <span class="ok">PASSED</span>   (0.12s)
+
+Running: Digits classification test
+  Final Test Accuracy: <span class="num">0.9889</span>
+  test_digits.py               <span class="ok">PASSED</span>   (1.67s)
+
+Running: Regression test
+  Epoch 100/100 — Test Loss: <span class="num">0.1151</span>
+  test_regression.py           <span class="ok">PASSED</span>   (0.01s)
+
+  test_basic.py                <span class="ok">PASSED</span>   (0.11s)
+
+Total: <span class="ok">4/4 tests passed</span>
+<span class="ok">All tests passed successfully!</span></pre>
+      </div>
+    </div>
+
+    <div class="chips">
+      <span class="chip">Dense layers</span>
+      <span class="chip">Backpropagation</span>
+      <span class="chip">Optimisers</span>
+      <span class="chip">NumPy only</span>
+      <span class="chip">Iris · Digits · Regression</span>
+    </div>
+  </body>
+</html>

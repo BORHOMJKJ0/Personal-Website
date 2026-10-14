@@ -1,5 +1,5 @@
-import { GraduationCap } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Logo } from './Logo';
 import { Section } from './Section';
 
 export function Education({ index }: { index: number }) {
@@ -21,12 +21,7 @@ export function Education({ index }: { index: number }) {
     >
       <div className="grid gap-5 lg:grid-cols-[1.3fr_1fr]">
         <article className="rounded-2xl border border-line bg-surface p-6 sm:p-8">
-          <span
-            className="inline-flex size-10 items-center justify-center rounded-xl bg-accent-soft text-accent"
-            aria-hidden="true"
-          >
-            <GraduationCap className="size-5" />
-          </span>
+          <Logo org="damascus-university" name={t('education.school')} size="lg" />
           <h3 className="mt-5 text-lg leading-snug font-semibold text-fg sm:text-xl">
             {t('education.degree')}
           </h3>

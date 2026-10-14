@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { skillGroups } from '@/data/skills';
+import { skillGroups, type SkillGroup } from '@/data/skills';
 import { useReveal } from '@/hooks/useReveal';
 import { Section } from './Section';
 
@@ -20,6 +20,7 @@ export function Skills({ index }: { index: number }) {
           <SkillCard
             key={group.id}
             label={t(`skills.groups.${group.id}`)}
+            Icon={group.Icon}
             items={group.items}
             position={position}
           />
@@ -31,10 +32,12 @@ export function Skills({ index }: { index: number }) {
 
 function SkillCard({
   label,
+  Icon,
   items,
   position,
 }: {
   label: string;
+  Icon: SkillGroup['Icon'];
   items: string[];
   position: number;
 }) {
@@ -43,11 +46,13 @@ function SkillCard({
   return (
     <li
       ref={ref}
-      className="reveal flex flex-col bg-bg p-6 lg:last:col-span-3"
+      className="reveal group flex flex-col bg-bg p-6 transition-colors hover:bg-surface-alt lg:last:col-span-3"
       style={{ transitionDelay: `${Math.min(position, 5) * 50}ms` }}
     >
-      <h3 className="flex items-center gap-2.5 text-sm font-semibold text-fg">
-        <span className="size-1.5 rounded-full bg-accent" aria-hidden="true" />
+      <h3 className="flex items-center gap-3 text-sm font-semibold text-fg">
+        <span className="inline-flex size-8 items-center justify-center rounded-lg bg-accent-soft text-accent transition-transform duration-300 group-hover:scale-110">
+          <Icon className="size-4" aria-hidden="true" />
+        </span>
         {label}
       </h3>
       {/* Technology names stay LTR so mixed Arabic/Latin lines read correctly. */}
