@@ -22,6 +22,7 @@ npx playwright install chromium
 | `node check-profile-images.mjs [url] [outDir]` | Verify the portrait and MAPS load with the correct formats, content versions and bytes in all language/theme/size combinations |
 | `node check-motion.mjs [url]` | Verify counters, typing, floating chips and hover video — and that reduced motion disables them |
 | `node check-site-motion.mjs [url]` | Assert text motion in every section, counts, university seals, Arabic shaping, language switches, scroll progress and keyboard dialogs across mobile/desktop and both themes |
+| `node check-counter-motion.mjs [url] [outDir]` | Verify the four digit effects, exact final values, button/hover/scroll replay and mid-count reduced-motion changes; capture counting and settled screenshots |
 | `node explore.mjs <url>` | Print a page's routes, headings and buttons (used when planning a capture) |
 | `node crop.mjs <png> <outDir> [slice]` | Slice a tall screenshot into reviewable pieces |
 

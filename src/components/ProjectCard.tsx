@@ -8,6 +8,7 @@ import { Badge } from './Badge';
 import { GitHubIcon, GitLabIcon } from './BrandIcons';
 import { ProjectMedia } from './ProjectMedia';
 import { AnimatedText } from './AnimatedText';
+import { usePointerTilt } from '@/hooks/usePointerTilt';
 
 const REPO_ICON = { github: GitHubIcon, gitlab: GitLabIcon, demo: ExternalLink } as const;
 
@@ -27,6 +28,7 @@ export function ProjectCard({
 }) {
   const { t } = useTranslation();
   const ref = useReveal<HTMLLIElement>();
+  const tilt = usePointerTilt<HTMLLIElement>();
   const [hovered, setHovered] = useState(false);
   const base = `projects.items.${project.id}`;
   const title = t(`${base}.title`);
@@ -41,7 +43,8 @@ export function ProjectCard({
   return (
     <li
       ref={ref}
-      className="reveal motion-cascade group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-surface transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-card"
+      className="reveal motion-cascade tilt-card group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-surface transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-card"
+      {...tilt}
       style={{ '--reveal-delay': `${Math.min(index, 5) * 60}ms` } as CSSProperties}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}

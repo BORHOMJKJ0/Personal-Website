@@ -27,6 +27,7 @@
     "closeDialog": "إغلاق تفاصيل المشروع"
   },
   "hero": {
+    "replayStats": "إعادة تحريك الأرقام",
     "availability": "متاح لفرص في تطوير الـ Backend وهندسة البرمجيات",
     "name": "عمر برهم",
     "role": "مطوّر Full-Stack بتوجّه Backend",

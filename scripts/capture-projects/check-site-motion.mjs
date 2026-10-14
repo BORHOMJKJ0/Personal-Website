@@ -29,6 +29,10 @@ try {
       page.on('pageerror', (error) => errors.push(String(error)));
       await page.goto(`${BASE}/?lang=${lang}`, { waitUntil: 'domcontentloaded' });
       await page.locator('[data-counter]').first().waitFor();
+      await page.locator('.stat-strip').scrollIntoViewIfNeeded();
+      if (!reduced) {
+        await page.waitForFunction(() => Number(document.querySelector('.stat-card')?.getAttribute('data-counter-run')) > 0);
+      }
       const samples = [];
       for (let i = 0; i < 18; i++) {
         samples.push(await page.locator('[data-counter]').first().textContent());
@@ -36,7 +40,7 @@ try {
       }
       const unique = new Set(samples);
       assert.ok(reduced ? unique.size === 1 : unique.size > 2, `counter did not respect ${reducedMotion}`);
-      assert.equal(samples.at(-1), '150+');
+      await page.waitForFunction(() => document.querySelector('[data-counter]')?.textContent === '150+');
       await page.getByRole('heading', { level: 1, name: lang === 'en' ? 'Omar Borhom' : 'عمر برهم', exact: true }).waitFor();
       const firstRole = await page.locator('h1 + p').innerText();
       await page.waitForTimeout(1800);
@@ -99,6 +103,14 @@ try {
       await page.keyboard.press('Escape');
       assert.equal(await dialog.count(), 0);
       assert.ok(await opener.evaluate((node) => node === document.activeElement), 'focus must return to the project');
+      if (!reduced && width === 1440) {
+        const card = page.locator('.tilt-card').first();
+        await card.hover({ position: { x: 20, y: 20 } });
+        await page.waitForTimeout(250);
+        assert.ok(await card.evaluate((node) => !new DOMMatrix(getComputedStyle(node).transform).is2D), 'pointer tilt must create real depth');
+        assert.ok(await card.evaluate((node) => node.style.getPropertyValue('--spot-x').length > 0), 'pointer highlight');
+        await page.mouse.move(0, 0);
+      }
       assert.deepEqual(errors, []);
       console.log(`PASS ${lang}-${theme}-${width}-${reducedMotion}: text, counters, every section, logos, progress and dialog`);
     } finally {

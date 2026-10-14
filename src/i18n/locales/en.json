@@ -27,6 +27,7 @@
     "closeDialog": "Close project details"
   },
   "hero": {
+    "replayStats": "Replay numbers",
     "availability": "Open to backend & software engineering roles",
     "name": "Omar Borhom",
     "role": "Backend-focused full-stack developer",

@@ -30,6 +30,7 @@ export function Hero() {
   return (
     <section id="top" className="relative overflow-hidden pt-28 pb-16 sm:pt-32 sm:pb-24">
       <div className="grid-backdrop pointer-events-none absolute inset-0 -z-10" aria-hidden="true" />
+      <div className="hero-ambient" aria-hidden="true"><span /><span /></div>
       <FloatingTech />
 
       <Container>

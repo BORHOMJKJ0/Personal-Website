@@ -235,6 +235,11 @@ scripts/                    Sitemap and OG image generators
   Arabic words intact so cursive joins survive. Nonbreaking spaces stay inside
   their word. Screen readers receive the complete text once. Reduced motion
   displays final numbers and text immediately and disables decorative motion.
+  The hero counters use four distinct digit effects (roll, flip, bounce and
+  wipe), stagger their starts and replay when returning to view. Hovering a
+  settled tile replays it; the “Replay numbers” button restarts all four.
+  Pointer-driven card tilt, highlights, button sweeps, portrait orbit strokes
+  and ambient drift use CSS transforms and small, bounded updates.
 - **Fonts**: Space Grotesk (Latin display), Inter (Latin body) and IBM Plex
   Sans Arabic, loaded from Google Fonts with `display=swap` and a system-font
   fallback chain. Arabic swaps the display and body faces to IBM Plex Sans

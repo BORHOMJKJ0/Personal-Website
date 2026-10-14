@@ -5,6 +5,7 @@ import { useReveal } from '@/hooks/useReveal';
 import { Badge } from './Badge';
 import { Section } from './Section';
 import { AnimatedText } from './AnimatedText';
+import { usePointerTilt } from '@/hooks/usePointerTilt';
 
 export function Services({ index }: { index: number }) {
   const { t } = useTranslation();
@@ -36,15 +37,17 @@ function ServiceCard({
 }) {
   const { t } = useTranslation();
   const ref = useReveal<HTMLLIElement>();
+  const tilt = usePointerTilt<HTMLLIElement>();
   const { Icon } = service;
 
   return (
     <li
       ref={ref}
-      className="reveal motion-cascade group rounded-2xl border border-line bg-surface p-6 transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-card sm:p-7"
+      className="reveal motion-cascade tilt-card group rounded-2xl border border-line bg-surface p-6 transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-card sm:p-7"
+      {...tilt}
       style={{ '--reveal-delay': `${Math.min(position, 3) * 70}ms` } as CSSProperties}
     >
-      <span className="inline-flex size-11 items-center justify-center rounded-xl bg-accent-soft text-accent transition-transform duration-300 group-hover:scale-110">
+      <span className="service-icon inline-flex size-11 items-center justify-center rounded-xl bg-accent-soft text-accent transition-transform duration-300 group-hover:scale-110">
         <Icon className="size-5" aria-hidden="true" />
       </span>
 

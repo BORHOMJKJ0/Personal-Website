@@ -20,6 +20,9 @@ export function Avatar() {
         className="portrait-glow absolute -inset-3 -z-10 rounded-[2rem] bg-accent/15 blur-2xl"
         aria-hidden="true"
       />
+      <svg className="portrait-orbit" viewBox="0 0 208 208" fill="none" aria-hidden="true">
+        <rect x="1" y="1" width="206" height="206" rx="32" pathLength="1" />
+      </svg>
       <div className="portrait-frame relative aspect-square w-36 overflow-hidden rounded-[1.75rem] border border-line bg-surface-alt shadow-card sm:w-44 lg:w-52">
         <img
           src={assetUrl(profilePhoto)}
