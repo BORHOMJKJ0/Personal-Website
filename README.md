@@ -106,8 +106,11 @@ Entries in `moreProjects` only need `title` and `tagline`.
 ### Replacing the profile photo
 
 Replace `public/images/profile.jpg` with your photo — **same filename**, no
-code change. The frame is a fixed square and the image is cropped with
-`object-fit: cover` anchored to the top, so any size or aspect ratio works.
+code change. Use an actual JPEG, at most 800px on its longest side, with a
+face-focused square crop. The frame uses `object-fit: cover` anchored to the
+top; check it on mobile and desktop. Vite derives a `?v=` value from the file's
+contents on each build, so replacing the photo also invalidates cached copies.
+Restart the dev server after replacing it to refresh the version.
 
 ### Project media
 

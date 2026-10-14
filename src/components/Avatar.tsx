@@ -6,9 +6,9 @@ import { assetUrl } from '@/lib/assets';
  * Hero portrait.
  *
  * To change the photo, replace `public/images/profile.jpg` with your own —
- * same filename, no code change. The frame is a fixed square and the image is
- * cropped with `object-fit: cover` anchored to the top, so any photo at any
- * resolution fills it without distortion and without cutting off a face.
+ * same filename, no code change. Vite adds a content version to the URL.
+ * Use a face-focused square crop, at most 800px. The fixed square frame uses
+ * `object-fit: cover` anchored to the top; check the face remains visible.
  */
 export function Avatar() {
   const { t } = useTranslation();

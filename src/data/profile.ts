@@ -40,5 +40,5 @@ export const heroStats = [
   { id: 'projects', to: projects.length, suffix: '' }, // counted from src/data/projects.ts
 ] as const;
 
-/** Photo in the hero. Replace public/images/profile.jpg to change it. */
-export const profilePhoto = 'images/profile.jpg';
+/** Photo in the hero. Vite versions this URL from the file contents at build time. */
+export const profilePhoto = `images/profile.jpg?v=${import.meta.env.VITE_PROFILE_PHOTO_VERSION}`;

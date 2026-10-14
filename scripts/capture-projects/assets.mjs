@@ -1,7 +1,7 @@
 /**
  * One-off asset preparation that does not need a browser:
  *   - normalise the downloaded university logo
- *   - generate the neutral placeholder profile photo
+ *   - generate a neutral placeholder only when no profile photo exists
  *
  *   node assets.mjs
  */
@@ -50,5 +50,9 @@ const avatarSvg = Buffer.from(`
 </svg>`);
 
 const profile = join(IMAGES, 'profile.jpg');
-await sharp(avatarSvg).jpeg({ quality: 86, progressive: true }).toFile(profile);
-log(`${relative(profile)}  ${kb(profile)}`);
+if (existsSync(profile)) {
+  log('profile.jpg already exists; keeping the current portrait');
+} else {
+  await sharp(avatarSvg).jpeg({ quality: 86, progressive: true }).toFile(profile);
+  log(`${relative(profile)}  ${kb(profile)}`);
+}

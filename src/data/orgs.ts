@@ -8,10 +8,7 @@
  *   damascus-university — en.wikipedia.org/wiki/File:Damascus_University.png
  *                         (the official seal; the university's own site is not
  *                         reachable from here)
- *   maps                — multiaidprograms.org is behind a bot challenge that
- *                         a real browser could not clear either, and the logo
- *                         is not on Wikimedia. Drop maps.png into
- *                         /public/logos and set `file` to use it.
+ *   maps                — official mark supplied by the site owner.
  *   faculty, trip, union — no public brand mark; initials by design.
  */
 export type Org = {
@@ -32,8 +29,7 @@ export const orgs: Record<string, Org> = {
   },
   maps: {
     id: 'maps',
-    // TODO: replace with the official mark once a copy is available.
-    file: null,
+    file: `${LOGO_ROOT}/maps.png`,
     initials: 'M',
   },
   faculty: {

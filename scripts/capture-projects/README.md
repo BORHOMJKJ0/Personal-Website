@@ -17,8 +17,9 @@ npx playwright install chromium
 | `node capture.mjs` | Capture every project into `public/projects/<slug>/` |
 | `node capture.mjs automata baraa` | Capture only the named targets |
 | `node logos.mjs` | Fetch organisation logos into `public/logos/` |
-| `node assets.mjs` | Normalise the university logo, regenerate the placeholder avatar |
+| `node assets.mjs` | Normalise the university logo, create a placeholder avatar only if no portrait exists |
 | `node portfolio-shots.mjs [url] [outDir]` | Screenshot the portfolio in EN/AR × light/dark × mobile/desktop, with a `report.json` |
+| `node check-profile-images.mjs [url] [outDir]` | Verify the portrait and MAPS load with the correct formats, content versions and bytes in all language/theme/size combinations |
 | `node check-motion.mjs [url]` | Verify counters, typing, floating chips and hover video — and that reduced motion disables them |
 | `node explore.mjs <url>` | Print a page's routes, headings and buttons (used when planning a capture) |
 | `node crop.mjs <png> <outDir> [slice]` | Slice a tall screenshot into reviewable pieces |
