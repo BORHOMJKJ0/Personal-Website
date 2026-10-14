@@ -35,8 +35,20 @@ claims that the CV does not support.
 | react-i18next | 17 | Two bundled JSON locales, no lazy loading (they are small) |
 | lucide-react | 1 | UI icons only — **v1 dropped all brand icons**, so GitHub/GitLab/LinkedIn are inline SVG in `src/components/BrandIcons.tsx` |
 
-No router (single page, anchor navigation), no animation library (CSS only),
-no component library.
+No router (single page, anchor navigation), no animation library, no component
+library.
+
+**Motion is hand-rolled on purpose.** Scroll reveals and stagger are CSS plus
+`useReveal` (IntersectionObserver); counters are `useCountUp`
+(requestAnimationFrame); the hero's typing line and drifting chips are their
+own small components. A library was considered and declined — this costs 0 KB
+and keeps the bundle where it is. Do not add one without a reason that this
+cannot cover.
+
+**Every animated path must be disabled under `prefers-reduced-motion`.** CSS
+handles most of it; autoplaying video has to be decided in JS, which is what
+`useReducedMotion` is for. `scripts/capture-projects/check-motion.mjs` asserts
+both states — run it after touching anything animated.
 
 ## Architecture decisions
 
@@ -131,6 +143,23 @@ These are easy to break and were each fixed once already:
   referenced from React. With `base: '/'` it only normalises the leading slash,
   but routing through `BASE_URL` keeps the links honest if the base ever moves.
 
+## Project media
+
+Covers, extra screens and demos live in `public/projects/<id>/` and are
+declared in each project's `media` field. They are produced by
+`scripts/capture-projects/`, which has **its own package.json** — Playwright
+and sharp must never become dependencies of the site. Each target in
+`targets.mjs` carries a comment saying how that project was reached, and the
+folder's README has the setup for the ones needing a container or a clone.
+
+Three projects have no runnable UI (`stock-prediction`, `trip-platform`,
+`mini-nn`) and render HTML templates from `templates/` instead, styled to match
+the site's light palette so a diagram sits beside a screenshot without looking
+foreign.
+
+Rules: clones live in a temp directory and are deleted afterwards; nothing from
+a cloned repo — source, `.env`, database — is written into this one.
+
 ## Content provenance
 
 Everything is from `cv.pdf` except:
@@ -149,9 +178,21 @@ The Arabic rendering of the name is **عمر برهم**, as corrected by the own
 it consistent across `hero.name`, `nav.brandAria`, `meta.title` and
 `footer.builtBy` in `ar.json`.
 
-One `TODO:` remains in the source: `cv.ar` in `src/data/profile.ts`. It is
-`null`, which hides the Arabic CV button rather than linking a missing file.
-Set it to `'cv-ar.pdf'` once that file exists in `/public`.
+Counter values in `heroStats` are either stated in the CV (150+ endpoints, 20+
+components, 60+ indicators) or counted from `src/data/projects.ts` (project
+count). Do not add a counter whose number cannot be traced to one of those.
+
+Services in `src/data/services.ts` are drawn from the CV's TECHNICAL SKILLS and
+EXPERIENCE sections — they describe work the CV evidences, not an aspirational
+menu.
+
+Two `TODO:`s remain in the source:
+- `cv.ar` in `src/data/profile.ts` — `null`, which hides the Arabic CV button
+  rather than linking a missing file. Set it to `'cv-ar.pdf'` once that file
+  exists in `/public`.
+- `maps` in `src/data/orgs.ts` — no official logo could be sourced
+  (multiaidprograms.org is behind a bot challenge a real browser could not
+  clear either, and it is not on Wikimedia), so it renders an initials badge.
 
 ## Verifying changes
 

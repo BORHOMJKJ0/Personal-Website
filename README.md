@@ -5,6 +5,8 @@ Tailwind CSS. Static output, no backend, no analytics.
 
 - English by default; Arabic with full RTL when chosen, and the choice persists
 - Dark / light themes that follow the system preference until overridden, with no flash on load
+- Project cards lead with a screenshot; demos play on hover, or in view on mobile
+- Counters, scroll reveals and a typing hero line — all off under `prefers-reduced-motion`
 - All content lives in a data layer, so editing the site never means touching a component
 - Per-language SEO: `<title>`, meta description, Open Graph, hreflang, sitemap, JSON-LD
 
@@ -25,6 +27,9 @@ npm run dev      # http://localhost:5173
 | `npm run typecheck` | Type-check only                                           |
 | `npm run og`        | Re-render `public/og.svg` to `public/og.png`              |
 | `npm run sitemap`   | Regenerate `public/sitemap.xml` and `public/robots.txt`   |
+
+Media and verification tooling lives in `scripts/capture-projects/` with its
+own `package.json`; see its README.
 
 ---
 
@@ -97,6 +102,28 @@ node -e "const f=n=>require('./src/i18n/locales/'+n+'.json');const p=(o,b='')=>O
    ```
 
 Entries in `moreProjects` only need `title` and `tagline`.
+
+### Replacing the profile photo
+
+Replace `public/images/profile.jpg` with your photo — **same filename**, no
+code change. The frame is a fixed square and the image is cropped with
+`object-fit: cover` anchored to the top, so any size or aspect ratio works.
+
+### Project media
+
+Covers, extra screens and demo videos live in `public/projects/<id>/` and are
+wired up in the `media` field of each entry in
+[src/data/projects.ts](src/data/projects.ts). To regenerate or add to them, see
+[scripts/capture-projects/README.md](scripts/capture-projects/README.md) — that
+folder has its own dependencies and is never part of the site build.
+
+### Organisation logos
+
+`public/logos/` plus [src/data/orgs.ts](src/data/orgs.ts). An entry with
+`file: null` renders an initials badge instead, which is how the organisations
+without a sourceable logo are handled. Drop a file in and point `file` at it to
+switch one over. Logos render on a light tile in both themes, because most
+institutional marks are dark artwork that disappears on a dark background.
 
 ### Replacing the CV
 
