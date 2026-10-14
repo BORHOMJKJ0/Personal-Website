@@ -1,10 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { Section } from './Section';
+import { useReveal } from '@/hooks/useReveal';
+import { AnimatedText } from './AnimatedText';
 
 const FACTS = ['location', 'study', 'focus', 'languages', 'cp'] as const;
 
 export function About({ index }: { index: number }) {
   const { t } = useTranslation();
+  const introRef = useReveal<HTMLDivElement>();
+  const factsRef = useReveal<HTMLDivElement>();
 
   return (
     <Section
@@ -14,14 +18,14 @@ export function About({ index }: { index: number }) {
       title={t('about.title')}
     >
       <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
-        <div className="space-y-5 text-base leading-relaxed text-fg-muted sm:text-lg">
+        <div ref={introRef} className="reveal motion-cascade space-y-5 text-base leading-relaxed text-fg-muted sm:text-lg">
           <p>{t('about.p1')}</p>
           <p>{t('about.p2')}</p>
           <p>{t('about.p3')}</p>
         </div>
 
-        <div className="border-s-2 border-accent ps-6">
-          <h3 className="eyebrow text-fg">{t('about.factsTitle')}</h3>
+        <div ref={factsRef} className="reveal motion-cascade border-s-2 border-accent ps-6">
+          <h3 className="eyebrow text-fg"><AnimatedText>{t('about.factsTitle')}</AnimatedText></h3>
           <dl className="mt-5 space-y-4">
             {FACTS.map((fact) => (
               <div key={fact}>

@@ -1,12 +1,14 @@
 import { ArrowUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Container } from './Section';
+import { useReveal } from '@/hooks/useReveal';
 
 export function Footer() {
   const { t } = useTranslation();
+  const ref = useReveal<HTMLElement>();
 
   return (
-    <footer className="border-t border-line py-10">
+    <footer ref={ref} className="reveal motion-cascade border-t border-line py-10">
       <Container>
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="text-xs leading-relaxed text-fg-subtle">
@@ -16,7 +18,7 @@ export function Footer() {
 
           <a
             href="#top"
-            className="inline-flex items-center gap-2 rounded-full border border-line px-4 py-2.5 text-xs font-medium text-fg-muted transition-colors hover:border-accent hover:text-accent"
+            className="motion-interactive inline-flex items-center gap-2 rounded-full border border-line px-4 py-2.5 text-xs font-medium text-fg-muted transition-colors hover:border-accent hover:text-accent"
           >
             <ArrowUp className="size-3.5" aria-hidden="true" />
             {t('footer.backToTop')}

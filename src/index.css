@@ -325,3 +325,188 @@
     }
   }
 }
+
+/* Site-wide motion uses the existing palette and reserves every element's space.
+   These unlayered transitions also preserve reveal fades on cards whose
+   Tailwind hover utilities set their own transition properties. */
+.reveal {
+  transition:
+    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms),
+    background-color 250ms ease,
+    border-color 250ms ease,
+    box-shadow 250ms ease;
+}
+
+.reveal:focus-within {
+  opacity: 1;
+  transform: none;
+}
+
+.motion-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.motion-letter {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.5em);
+  transition: translate 220ms ease, color 220ms ease;
+}
+
+.animated-text.is-visible .motion-letter {
+  animation: text-enter 650ms cubic-bezier(0.22, 1, 0.36, 1) var(--text-delay, 0ms) both;
+}
+
+.hero-enter {
+  animation: content-enter 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hero-enter-1 { animation-delay: 120ms; }
+.hero-enter-2 { animation-delay: 240ms; }
+.hero-enter-3 { animation-delay: 360ms; }
+
+.hero-portrait {
+  --portrait-shift: 24px;
+  animation: portrait-enter 1000ms cubic-bezier(0.22, 1, 0.36, 1) 100ms both;
+}
+[dir='rtl'] .hero-portrait { --portrait-shift: -24px; }
+.portrait-frame { animation: portrait-drift 7s ease-in-out 1s infinite; }
+.portrait-glow { animation: glow-breathe 7s ease-in-out infinite; }
+
+.motion-cascade.is-visible > *,
+.motion-cascade.is-visible :is(ul, dl) > *,
+.dialog-content > * {
+  animation: content-enter 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + var(--cascade-delay, 80ms));
+}
+:is(.motion-cascade, .dialog-content) > :nth-child(2) { --cascade-delay: 140ms; }
+:is(.motion-cascade, .dialog-content) > :nth-child(3) { --cascade-delay: 200ms; }
+:is(.motion-cascade, .dialog-content) > :nth-child(n + 4) { --cascade-delay: 260ms; }
+.motion-cascade :is(ul, dl) > :nth-child(2) { --cascade-delay: 160ms; }
+.motion-cascade :is(ul, dl) > :nth-child(3) { --cascade-delay: 220ms; }
+.motion-cascade :is(ul, dl) > :nth-child(n + 4) { --cascade-delay: 280ms; }
+
+.reveal.is-visible .section-line {
+  transform-origin: left;
+  animation: rule-grow 1000ms cubic-bezier(0.22, 1, 0.36, 1) 100ms both;
+}
+[dir='rtl'] .section-line { transform-origin: right !important; }
+.stat-strip.is-visible .counter-number {
+  animation: number-enter 1000ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.stat-card { position: relative; }
+.stat-card::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transition: transform 350ms ease;
+}
+
+.site-header { animation: header-enter 650ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.header-links > a { animation: content-enter 600ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.scroll-progress {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  pointer-events: none;
+}
+[dir='rtl'] .scroll-progress { transform-origin: right; }
+.nav-link { position: relative; }
+.nav-link::after {
+  content: '';
+  position: absolute;
+  inset-inline: 12px;
+  bottom: 3px;
+  height: 1px;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transition: transform 250ms ease;
+}
+.nav-link[aria-current='true']::after { transform: scaleX(1); }
+.mobile-menu:not([hidden]), .modal-backdrop { animation: fade-enter 250ms ease both; }
+.modal-panel { animation: content-enter 450ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+.motion-interactive, .motion-badge, .skill-item {
+  transition: translate 220ms ease, color 220ms ease, background-color 220ms ease,
+    border-color 220ms ease, box-shadow 220ms ease;
+}
+.org-logo { transition: rotate 350ms ease, scale 350ms ease; }
+
+@media (hover: hover) and (pointer: fine) {
+  .animated-text:not(.animated-text--words) .motion-letter:hover {
+    translate: 0 -0.12em;
+    color: var(--color-accent);
+  }
+  .motion-interactive:hover { translate: 0 -3px; }
+  .motion-badge:hover, .skill-item:hover {
+    translate: 0 -2px;
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+  .group:hover .org-logo { rotate: -4deg; scale: 1.08; }
+  .stat-card:hover::after, .nav-link:hover::after { transform: scaleX(1); }
+}
+
+@keyframes text-enter {
+  from { opacity: 0; transform: translateY(0.5em) rotateX(-35deg); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes content-enter {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes portrait-enter {
+  from { opacity: 0; transform: translateX(var(--portrait-shift)) scale(0.94); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes portrait-drift {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes glow-breathe {
+  0%, 100% { opacity: 0.55; transform: scale(0.92); }
+  50% { opacity: 1; transform: scale(1.12); }
+}
+@keyframes number-enter {
+  from { opacity: 0; transform: translateY(12px) scale(0.94); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes rule-grow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@keyframes header-enter {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fade-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-letter, .reveal, .hero-enter, .hero-portrait,
+  .portrait-frame, .portrait-glow, .site-header, .header-links > a,
+  .section-line, .counter-number, .mobile-menu, .modal-backdrop, .modal-panel,
+  .motion-cascade.is-visible > *, .motion-cascade.is-visible :is(ul, dl) > *,
+  .dialog-content > * {
+    opacity: 1;
+    transform: none;
+    animation: none !important;
+    transition: none;
+  }
+  .motion-letter, .motion-interactive, .motion-badge, .skill-item, .org-logo, .reveal {
+    translate: none !important;
+    rotate: none !important;
+    scale: none !important;
+  }
+}

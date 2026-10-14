@@ -14,13 +14,13 @@ export function Avatar() {
   const { t } = useTranslation();
 
   return (
-    <div className="relative shrink-0">
+    <div className="hero-portrait relative shrink-0">
       {/* Soft accent glow behind the frame. */}
       <div
-        className="absolute -inset-3 -z-10 rounded-[2rem] bg-accent/15 blur-2xl"
+        className="portrait-glow absolute -inset-3 -z-10 rounded-[2rem] bg-accent/15 blur-2xl"
         aria-hidden="true"
       />
-      <div className="relative aspect-square w-36 overflow-hidden rounded-[1.75rem] border border-line bg-surface-alt shadow-card sm:w-44 lg:w-52">
+      <div className="portrait-frame relative aspect-square w-36 overflow-hidden rounded-[1.75rem] border border-line bg-surface-alt shadow-card sm:w-44 lg:w-52">
         <img
           src={assetUrl(profilePhoto)}
           alt={t('hero.photoAlt')}

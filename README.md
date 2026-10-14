@@ -6,7 +6,9 @@ Tailwind CSS. Static output, no backend, no analytics.
 - English by default; Arabic with full RTL when chosen, and the choice persists
 - Dark / light themes that follow the system preference until overridden, with no flash on load
 - Project cards lead with a screenshot; demos play on hover, or in view on mobile
-- Counters, scroll reveals and a typing hero line — all off under `prefers-reduced-motion`
+- Letter and word reveals, counting numbers, staggered cards, a floating portrait,
+  typing, hover responses, animated dialogs and a scroll progress line — with
+  `prefers-reduced-motion` support throughout
 - All content lives in a data layer, so editing the site never means touching a component
 - Per-language SEO: `<title>`, meta description, Open Graph, hreflang, sitemap, JSON-LD
 
@@ -227,8 +229,12 @@ scripts/                    Sitemap and OG image generators
 - **Browser support**: the build targets ES2020. Logical CSS properties
   (`ms-`, `me-`, `ps-`, `pe-`, `start-`, `end-`) are used throughout instead of
   left/right, which is what makes the RTL mirroring automatic.
-- **Motion**: all animation is CSS and is disabled under
-  `prefers-reduced-motion: reduce`.
+- **Motion**: CSS handles entrances and hover effects; IntersectionObserver
+  starts scroll reveals, requestAnimationFrame drives counters and the reading
+  progress line. `AnimatedText` staggers Latin letters and digits, and keeps
+  Arabic words intact so cursive joins survive. Nonbreaking spaces stay inside
+  their word. Screen readers receive the complete text once. Reduced motion
+  displays final numbers and text immediately and disables decorative motion.
 - **Fonts**: Space Grotesk (Latin display), Inter (Latin body) and IBM Plex
   Sans Arabic, loaded from Google Fonts with `display=swap` and a system-font
   fallback chain. Arabic swaps the display and body faces to IBM Plex Sans

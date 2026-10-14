@@ -27,10 +27,10 @@ async function sampleCounter(reducedMotion) {
   });
   const page = await context.newPage();
   await page.goto(BASE, { waitUntil: 'commit' });
-  await page.waitForSelector('dl dd span', { timeout: 20_000 });
+  await page.waitForSelector('[data-counter]', { timeout: 20_000 });
   const samples = [];
   for (let i = 0; i < 26; i++) {
-    samples.push(await page.evaluate(() => document.querySelector('dl dd span')?.textContent ?? '-'));
+    samples.push(await page.evaluate(() => document.querySelector('[data-counter]')?.textContent ?? '-'));
     await page.waitForTimeout(70);
   }
   await context.close();

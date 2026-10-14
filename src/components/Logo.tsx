@@ -37,7 +37,7 @@ export function Logo({
 
   return (
     <span
-      className={`${box} grid shrink-0 place-items-center overflow-hidden rounded-xl bg-white p-1.5 ring-1 ring-line`}
+      className={`${box} org-logo grid shrink-0 place-items-center overflow-hidden rounded-xl bg-white p-1.5 ring-1 ring-line`}
     >
       <img
         src={assetUrl(entry.file)}

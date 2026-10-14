@@ -13,13 +13,32 @@ export function Header({ theme, onToggleTheme }: { theme: Theme; onToggleTheme: 
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
+  const progressRef = useRef<HTMLDivElement | null>(null);
 
   // A hairline border only once the page has moved keeps the hero edge clean.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      setScrolled(window.scrollY > 8);
+      const travel = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = travel > 0 ? Math.min(1, Math.max(0, window.scrollY / travel)) : 0;
+      if (progressRef.current) progressRef.current.style.transform = `scaleX(${progress})`;
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    window.addEventListener('resize', onScroll);
+    const resizeObserver = new ResizeObserver(onScroll);
+    resizeObserver.observe(document.body);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      resizeObserver.disconnect();
+      cancelAnimationFrame(frame);
+    };
   }, []);
 
   useEffect(() => {
@@ -36,10 +55,11 @@ export function Header({ theme, onToggleTheme }: { theme: Theme; onToggleTheme: 
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-40 bg-bg/85 backdrop-blur-md transition-shadow ${
+      className={`site-header fixed inset-x-0 top-0 z-40 bg-bg/85 backdrop-blur-md transition-shadow ${
         scrolled ? 'border-b border-line' : 'border-b border-transparent'
       }`}
     >
+      <div ref={progressRef} className="scroll-progress" aria-hidden="true" />
       <Container>
         <div className="flex h-16 items-center justify-between gap-4">
           <a
@@ -58,17 +78,18 @@ export function Header({ theme, onToggleTheme }: { theme: Theme; onToggleTheme: 
             </span>
           </a>
 
-          <nav aria-label={t('nav.primaryLabel')} className="hidden items-center gap-1 lg:flex">
-            {sections.map((id) => (
+          <nav aria-label={t('nav.primaryLabel')} className="header-links hidden items-center gap-1 lg:flex">
+            {sections.map((id, index) => (
               <a
                 key={id}
                 href={`#${id}`}
                 aria-current={activeId === id ? 'true' : undefined}
-                className={`eyebrow rounded-full px-3 py-2 transition-colors ${
+                className={`nav-link eyebrow rounded-full px-3 py-2 transition-colors ${
                   activeId === id
                     ? 'bg-accent-soft text-accent'
                     : 'text-fg-muted hover:text-fg'
                 }`}
+                style={{ animationDelay: `${index * 45 + 100}ms` }}
               >
                 {t(`nav.${id}`)}
               </a>
@@ -102,7 +123,7 @@ export function Header({ theme, onToggleTheme }: { theme: Theme; onToggleTheme: 
       <div
         id="mobile-nav"
         hidden={!menuOpen}
-        className="border-y border-line bg-bg shadow-card lg:hidden"
+        className="mobile-menu border-y border-line bg-bg shadow-card lg:hidden"
       >
         <Container className="py-3">
           <nav aria-label={t('nav.primaryLabel')}>

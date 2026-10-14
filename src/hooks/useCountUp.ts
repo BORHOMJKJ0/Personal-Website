@@ -23,9 +23,10 @@ export function useCountUp(to: number, { duration = 1400 }: { duration?: number 
       setValue(to);
     };
 
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     if (
       typeof IntersectionObserver === 'undefined' ||
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      motionQuery.matches
     ) {
       finish();
       return;
@@ -58,9 +59,18 @@ export function useCountUp(to: number, { duration = 1400 }: { duration?: number 
     );
 
     observer.observe(node);
+    const onPreferenceChange = () => {
+      if (motionQuery.matches) {
+        observer.disconnect();
+        cancelAnimationFrame(frame);
+        finish();
+      }
+    };
+    motionQuery.addEventListener('change', onPreferenceChange);
     return () => {
       observer.disconnect();
       if (frame) cancelAnimationFrame(frame);
+      motionQuery.removeEventListener('change', onPreferenceChange);
     };
   }, [to, duration]);
 

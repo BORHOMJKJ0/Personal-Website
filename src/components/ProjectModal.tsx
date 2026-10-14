@@ -5,6 +5,7 @@ import type { Project } from '@/data/projects';
 import { assetUrl } from '@/lib/assets';
 import { Badge } from './Badge';
 import { GitHubIcon, GitLabIcon } from './BrandIcons';
+import { AnimatedText } from './AnimatedText';
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"]), input, select, textarea';
@@ -88,7 +89,7 @@ export function ProjectModal({
         a centred flex child taller than the scroll container has its top
         clipped and unreachable. Auto margins centre it only when it fits.
       */
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-fg/40 p-0 backdrop-blur-sm sm:p-6"
+      className="modal-backdrop fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-fg/40 p-0 backdrop-blur-sm sm:p-6"
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
@@ -99,18 +100,18 @@ export function ProjectModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby={`${project.id}-dialog-title`}
-        className="relative mt-auto w-full max-w-3xl rounded-t-2xl border border-line bg-bg shadow-card sm:my-auto sm:rounded-2xl"
+        className="modal-panel relative mt-auto w-full max-w-3xl rounded-t-2xl border border-line bg-bg shadow-card sm:my-auto sm:rounded-2xl"
       >
         <div className="sticky top-0 z-10 flex items-start gap-4 rounded-t-2xl border-b border-line bg-bg/95 px-5 py-4 backdrop-blur-md sm:px-8 sm:py-5">
           <div className="min-w-0 flex-1">
             <p className="eyebrow text-accent" dir="ltr">
-              {project.year}
+              <AnimatedText>{project.year}</AnimatedText>
             </p>
             <h2
               id={`${project.id}-dialog-title`}
               className="mt-1.5 text-xl leading-snug font-semibold text-fg sm:text-2xl"
             >
-              {t(`${base}.title`)}
+              <AnimatedText>{t(`${base}.title`)}</AnimatedText>
             </h2>
           </div>
           <button
@@ -124,7 +125,7 @@ export function ProjectModal({
           </button>
         </div>
 
-        <div className="space-y-8 px-5 py-7 sm:px-8 sm:py-8">
+        <div className="dialog-content space-y-8 px-5 py-7 sm:px-8 sm:py-8">
           {project.media ? (
             <img
               src={assetUrl(project.media.cover)}
@@ -154,7 +155,7 @@ export function ProjectModal({
                     dir="ltr"
                     className="font-display text-2xl font-bold text-fg sm:text-[1.75rem]"
                   >
-                    {metric.value}
+                    <AnimatedText>{metric.value}</AnimatedText>
                   </dd>
                   <dt className="mt-1 text-xs leading-snug text-fg-subtle">
                     {t(`projects.metrics.${metric.id}`)}
@@ -266,7 +267,7 @@ export function ProjectModal({
 function Block({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <h3 className="eyebrow text-fg-subtle">{label}</h3>
+      <h3 className="eyebrow text-fg-subtle"><AnimatedText>{label}</AnimatedText></h3>
       <p className="mt-3 text-sm leading-relaxed text-fg-muted sm:text-base">{children}</p>
     </div>
   );

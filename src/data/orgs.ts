@@ -9,7 +9,8 @@
  *                         (the official seal; the university's own site is not
  *                         reachable from here)
  *   maps                — official mark supplied by the site owner.
- *   faculty, trip, union — no public brand mark; initials by design.
+ *   faculty, union      — use their parent university's seal.
+ *   trip                — no public brand mark; initials by design.
  */
 export type Org = {
   id: string;
@@ -34,12 +35,12 @@ export const orgs: Record<string, Org> = {
   },
   faculty: {
     id: 'faculty',
-    file: null,
+    file: `${LOGO_ROOT}/damascus-university.png`,
     initials: 'IT',
   },
   union: {
     id: 'union',
-    file: null,
+    file: `${LOGO_ROOT}/damascus-university.png`,
     initials: 'SU',
   },
   trip: {

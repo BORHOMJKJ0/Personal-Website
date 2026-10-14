@@ -4,7 +4,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import type { Theme } from '@/hooks/useTheme';
 
 const BUTTON_BASE =
-  'inline-flex h-9 items-center justify-center rounded-full border border-line text-fg-muted transition-colors hover:border-line-strong hover:text-fg hover:bg-surface-alt';
+  'motion-interactive inline-flex h-9 items-center justify-center rounded-full border border-line text-fg-muted transition-colors hover:border-line-strong hover:text-fg hover:bg-surface-alt';
 
 export function ThemeToggle({ theme, onToggle }: { theme: Theme; onToggle: () => void }) {
   const { t } = useTranslation();

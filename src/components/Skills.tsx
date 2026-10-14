@@ -1,7 +1,9 @@
 import { useTranslation } from 'react-i18next';
+import type { CSSProperties } from 'react';
 import { skillGroups, type SkillGroup } from '@/data/skills';
 import { useReveal } from '@/hooks/useReveal';
 import { Section } from './Section';
+import { AnimatedText } from './AnimatedText';
 
 export function Skills({ index }: { index: number }) {
   const { t } = useTranslation();
@@ -46,19 +48,19 @@ function SkillCard({
   return (
     <li
       ref={ref}
-      className="reveal group flex flex-col bg-bg p-6 transition-colors hover:bg-surface-alt lg:last:col-span-3"
-      style={{ transitionDelay: `${Math.min(position, 5) * 50}ms` }}
+      className="reveal motion-cascade group flex flex-col bg-bg p-6 transition-colors hover:bg-surface-alt lg:last:col-span-3"
+      style={{ '--reveal-delay': `${Math.min(position, 5) * 50}ms` } as CSSProperties}
     >
       <h3 className="flex items-center gap-3 text-sm font-semibold text-fg">
         <span className="inline-flex size-8 items-center justify-center rounded-lg bg-accent-soft text-accent transition-transform duration-300 group-hover:scale-110">
           <Icon className="size-4" aria-hidden="true" />
         </span>
-        {label}
+        <AnimatedText>{label}</AnimatedText>
       </h3>
       {/* Technology names stay LTR so mixed Arabic/Latin lines read correctly. */}
       <ul dir="ltr" className="mt-4 flex flex-wrap gap-x-2 gap-y-1.5">
         {items.map((item, itemIndex) => (
-          <li key={item} className="font-mono text-[0.8125rem] text-fg-muted">
+          <li key={item} className="skill-item font-mono text-[0.8125rem] text-fg-muted">
             {item}
             {itemIndex < items.length - 1 ? (
               <span className="text-line-strong" aria-hidden="true">

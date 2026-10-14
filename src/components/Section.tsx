@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { useReveal } from '@/hooks/useReveal';
+import { AnimatedText } from './AnimatedText';
 
 type SectionProps = {
   id: string;
@@ -35,10 +36,10 @@ export function SectionRule({
   return (
     <div className="flex items-center gap-4">
       <span className="eyebrow text-accent" dir="ltr" aria-hidden="true">
-        {typeof index === 'number' ? String(index).padStart(2, '0') : index}
+        <AnimatedText>{typeof index === 'number' ? String(index).padStart(2, '0') : index}</AnimatedText>
       </span>
-      <span className="eyebrow text-fg-muted">{eyebrow}</span>
-      <span className="h-px flex-1 bg-line" aria-hidden="true" />
+      <span className="eyebrow text-fg-muted"><AnimatedText words>{eyebrow}</AnimatedText></span>
+      <span className="section-line h-px flex-1 bg-line" aria-hidden="true" />
     </div>
   );
 }
@@ -68,7 +69,7 @@ export function Section({
               id={`${id}-heading`}
               className="text-h2 leading-[1.1] font-semibold text-fg"
             >
-              {title}
+              <AnimatedText>{title}</AnimatedText>
             </h2>
             {subtitle ? (
               <p className="mt-4 text-base leading-relaxed text-fg-muted sm:text-lg">{subtitle}</p>

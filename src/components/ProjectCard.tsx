@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { CSSProperties } from 'react';
 import { ArrowUpRight, ExternalLink, Lock, Star } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { Project } from '@/data/projects';
@@ -6,6 +7,7 @@ import { useReveal } from '@/hooks/useReveal';
 import { Badge } from './Badge';
 import { GitHubIcon, GitLabIcon } from './BrandIcons';
 import { ProjectMedia } from './ProjectMedia';
+import { AnimatedText } from './AnimatedText';
 
 const REPO_ICON = { github: GitHubIcon, gitlab: GitLabIcon, demo: ExternalLink } as const;
 
@@ -39,8 +41,8 @@ export function ProjectCard({
   return (
     <li
       ref={ref}
-      className="reveal group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-surface transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-card"
-      style={{ transitionDelay: `${Math.min(index, 5) * 60}ms` }}
+      className="reveal motion-cascade group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-surface transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-card"
+      style={{ '--reveal-delay': `${Math.min(index, 5) * 60}ms` } as CSSProperties}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onFocusCapture={() => setHovered(true)}
@@ -65,7 +67,7 @@ export function ProjectCard({
         */}
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <span className="eyebrow text-accent" dir="ltr">
-            {project.year}
+            <AnimatedText>{project.year}</AnimatedText>
           </span>
           {project.featured ? (
             <span className="eyebrow inline-flex items-center gap-1.5 rounded-full bg-accent px-2 py-0.5 text-accent-fg">
@@ -91,7 +93,7 @@ export function ProjectCard({
             onClick={onOpen}
             className="text-start transition-colors group-hover:text-accent"
           >
-            {title}
+            <AnimatedText>{title}</AnimatedText>
             <span className="sr-only"> — {t('projects.viewDetails')}</span>
           </button>
         </h3>

@@ -9,7 +9,7 @@ export function Badge({ children }: { children: ReactNode }) {
   return (
     <span
       dir="ltr"
-      className="eyebrow inline-flex items-center rounded-full border border-line bg-surface px-2.5 py-1 text-fg-muted"
+      className="motion-badge eyebrow inline-flex items-center rounded-full border border-line bg-surface px-2.5 py-1 text-fg-muted"
     >
       {children}
     </span>
