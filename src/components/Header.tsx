@@ -6,6 +6,7 @@ import { useScrollSpy } from '@/hooks/useScrollSpy';
 import type { Theme } from '@/hooks/useTheme';
 import { Container } from './Section';
 import { LanguageToggle, ThemeToggle } from './Toggles';
+import { STAGGER, staggerDelay } from '@/motion';
 
 export function Header({ theme, onToggleTheme }: { theme: Theme; onToggleTheme: () => void }) {
   const { t } = useTranslation();
@@ -89,7 +90,7 @@ export function Header({ theme, onToggleTheme }: { theme: Theme; onToggleTheme: 
                     ? 'bg-accent-soft text-accent'
                     : 'text-fg-muted hover:text-fg'
                 }`}
-                style={{ animationDelay: `${index * 45 + 100}ms` }}
+                style={{ animationDelay: `${staggerDelay(index, STAGGER / 2)}ms` }}
               >
                 {t(`nav.${id}`)}
               </a>

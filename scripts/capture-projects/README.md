@@ -20,9 +20,9 @@ npx playwright install chromium
 | `node assets.mjs` | Normalise the university logo, create a placeholder avatar only if no portrait exists |
 | `node portfolio-shots.mjs [url] [outDir]` | Screenshot the portfolio in EN/AR × light/dark × mobile/desktop, with a `report.json` |
 | `node check-profile-images.mjs [url] [outDir]` | Verify the portrait and MAPS load with the correct formats, content versions and bytes in all language/theme/size combinations |
-| `node check-motion.mjs [url]` | Verify counters, typing, floating chips and hover video — and that reduced motion disables them |
-| `node check-site-motion.mjs [url]` | Assert text motion in every section, counts, university seals, Arabic shaping, language switches, scroll progress and keyboard dialogs across mobile/desktop and both themes |
-| `node check-counter-motion.mjs [url] [outDir]` | Verify the four digit effects, exact final values, button/hover/scroll replay and mid-count reduced-motion changes; capture counting and settled screenshots |
+| `node check-motion.mjs [url] [outDir]` | Assert the motion system in EN/AR × 390/1440, normal and reduced: token parity, name opaque at first paint, typing (and its pause), hero loop pausing off screen / hidden tab, counter roll + values + baseline + every replay path, word headings, demo video, tilt reset; optional counter screenshots |
+| `node check-site-motion.mjs [url]` | Assert every section reveals, counters land, university seals load, Arabic stays joined, language switch, scroll progress and keyboard dialogs across mobile/desktop and both themes |
+| `node check-fonts.mjs [url]` | Assert per-language font downloads (no third-party, no cross-language faces), real rendering, two preloads and CLS ≤ 0.02 on a throttled connection |
 | `node explore.mjs <url>` | Print a page's routes, headings and buttons (used when planning a capture) |
 | `node crop.mjs <png> <outDir> [slice]` | Slice a tall screenshot into reviewable pieces |
 

@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import type { CSSProperties } from 'react';
 import { skillGroups, type SkillGroup } from '@/data/skills';
-import { useReveal } from '@/hooks/useReveal';
 import { Section } from './Section';
 import { AnimatedText } from './AnimatedText';
+import { staggerDelay, useReveal } from '@/motion';
 
 export function Skills({ index }: { index: number }) {
   const { t } = useTranslation();
@@ -49,10 +49,10 @@ function SkillCard({
     <li
       ref={ref}
       className="reveal motion-cascade group flex flex-col bg-bg p-6 transition-colors hover:bg-surface-alt lg:last:col-span-3"
-      style={{ '--reveal-delay': `${Math.min(position, 5) * 50}ms` } as CSSProperties}
+      style={{ '--reveal-delay': `${staggerDelay(Math.min(position, 5))}ms` } as CSSProperties}
     >
       <h3 className="flex items-center gap-3 text-sm font-semibold text-fg">
-        <span className="inline-flex size-8 items-center justify-center rounded-lg bg-accent-soft text-accent transition-transform duration-300 group-hover:scale-110">
+        <span className="inline-flex size-8 items-center justify-center rounded-lg bg-accent-soft text-accent transition-transform duration-(--dur-base) group-hover:scale-110">
           <Icon className="size-4" aria-hidden="true" />
         </span>
         <AnimatedText>{label}</AnimatedText>

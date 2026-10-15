@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Section } from './Section';
-import { useReveal } from '@/hooks/useReveal';
 import { AnimatedText } from './AnimatedText';
+import { useReveal } from '@/motion';
 
 const FACTS = ['location', 'study', 'focus', 'languages', 'cp'] as const;
 

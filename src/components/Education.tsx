@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { Logo } from './Logo';
 import { Section } from './Section';
-import { useReveal } from '@/hooks/useReveal';
 import { AnimatedText } from './AnimatedText';
+import { useReveal } from '@/motion';
 
 export function Education({ index }: { index: number }) {
   const { t, i18n } = useTranslation();
@@ -30,7 +30,7 @@ export function Education({ index }: { index: number }) {
           </h3>
           <p className="mt-2 text-sm text-fg-muted">{t('education.school')}</p>
           <p className="eyebrow mt-4 inline-block rounded-full border border-line px-2.5 py-1 text-fg-subtle">
-            <AnimatedText words>{t('education.period')}</AnimatedText>
+            <AnimatedText>{t('education.period')}</AnimatedText>
           </p>
         </article>
 

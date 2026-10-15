@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-import { useReveal } from '@/hooks/useReveal';
 import { AnimatedText } from './AnimatedText';
+import { useReveal } from '@/motion';
 
 type SectionProps = {
   id: string;
@@ -38,7 +38,7 @@ export function SectionRule({
       <span className="eyebrow text-accent" dir="ltr" aria-hidden="true">
         <AnimatedText>{typeof index === 'number' ? String(index).padStart(2, '0') : index}</AnimatedText>
       </span>
-      <span className="eyebrow text-fg-muted"><AnimatedText words>{eyebrow}</AnimatedText></span>
+      <span className="eyebrow text-fg-muted"><AnimatedText>{eyebrow}</AnimatedText></span>
       <span className="section-line h-px flex-1 bg-line" aria-hidden="true" />
     </div>
   );

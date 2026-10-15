@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ProjectMedia as Media } from '@/data/projects';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { assetUrl } from '@/lib/assets';
+import { useFinePointer, useReducedMotion } from '@/motion';
 
 /**
  * Cover image with an optional looping demo on top.
@@ -27,12 +27,8 @@ export function ProjectMedia({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [inView, setInView] = useState(false);
-  const [canHover, setCanHover] = useState(true);
+  const canHover = useFinePointer();
   const [playing, setPlaying] = useState(false);
-
-  useEffect(() => {
-    setCanHover(window.matchMedia('(hover: hover) and (pointer: fine)').matches);
-  }, []);
 
   // Touch devices: play while the card is on screen.
   useEffect(() => {
@@ -58,9 +54,9 @@ export function ProjectMedia({
         () => setPlaying(false), // autoplay refused; the cover stays up
       );
     } else {
+      // `playing` drops in the element's pause handler, which unmounts it.
       video.pause();
       video.currentTime = 0;
-      setPlaying(false);
     }
   }, [wanted]);
 
@@ -83,6 +79,7 @@ export function ProjectMedia({
           loop
           playsInline
           preload="none"
+          onPause={() => setPlaying(false)}
           aria-hidden="true"
           tabIndex={-1}
         >

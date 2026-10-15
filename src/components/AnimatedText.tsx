@@ -1,40 +1,40 @@
 import type { CSSProperties } from 'react';
-import { useReveal } from '@/hooks/useReveal';
+import { STAGGER, staggerDelay, useReveal } from '@/motion';
 
-/** Stagger Latin letters and digits, but keep Arabic words joined and readable. */
-export function AnimatedText({
-  children,
-  words = false,
-}: {
-  children: string;
-  words?: boolean;
-}) {
+/**
+ * Word-by-word entrance for headings and short labels.
+ *
+ * Words rise and fade in, staggered by the motion token, the first time the
+ * text scrolls into view. Splitting is by whitespace only, so Arabic words
+ * stay whole and joined; non-breaking spaces stay inside their word, which
+ * keeps mixed Arabic/Latin prefixes on one line.
+ *
+ * `rise` is for the hero name: the words start moving on first render and are
+ * fully opaque from the first frame — it must never fade in from nothing.
+ */
+export function AnimatedText({ children, rise = false }: { children: string; rise?: boolean }) {
   const ref = useReveal<HTMLSpanElement>({ threshold: 0.1 });
   let order = 0;
 
   return (
-    <span ref={ref} className={`animated-text ${words ? 'animated-text--words' : ''}`}>
+    <span
+      ref={rise ? undefined : ref}
+      className={rise ? 'animated-text animated-text--rise' : 'animated-text'}
+    >
       {/* Assistive technology reads the complete text once. */}
       <span className="sr-only">{children}</span>
       <span aria-hidden="true" key={children}>
-        {/* Keep nonbreaking spaces inside words, including mixed Arabic/Latin prefixes. */}
-        {children.split(/([ \t\n]+)/u).map((word, wordIndex) => {
+        {children.split(/([ \t\n]+)/u).map((word, index) => {
           if (!word.trim()) return word;
           const arabic = /\p{Script=Arabic}/u.test(word);
-          const pieces = words || arabic ? [word] : Array.from(word);
           return (
-            <span className="motion-word" dir={arabic ? 'rtl' : 'ltr'} key={wordIndex}>
-              {pieces.map((piece, pieceIndex) => (
-                <span
-                  key={pieceIndex}
-                  className="motion-letter"
-                  style={{
-                    '--text-delay': `${Math.min(order++ * (words || arabic ? 65 : 24), 480)}ms`,
-                  } as CSSProperties}
-                >
-                  {piece}
-                </span>
-              ))}
+            <span
+              className="motion-word"
+              dir={arabic ? 'rtl' : 'ltr'}
+              key={index}
+              style={{ '--word-delay': `${staggerDelay(order++, STAGGER)}ms` } as CSSProperties}
+            >
+              {word}
             </span>
           );
         })}

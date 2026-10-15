@@ -38,17 +38,42 @@ claims that the CV does not support.
 No router (single page, anchor navigation), no animation library, no component
 library.
 
-**Motion is hand-rolled on purpose.** Scroll reveals and stagger are CSS plus
-`useReveal` (IntersectionObserver); counters are `useCountUp`
-(requestAnimationFrame); the hero's typing line and drifting chips are their
-own small components. A library was considered and declined — this costs 0 KB
-and keeps the bundle where it is. Do not add one without a reason that this
-cannot cover.
+**Motion is hand-rolled on purpose.** No animation library — CSS transitions,
+IntersectionObserver and requestAnimationFrame cover everything at 0 KB. Do
+not add one without a reason that this cannot cover.
 
-**Every animated path must be disabled under `prefers-reduced-motion`.** CSS
-handles most of it; autoplaying video has to be decided in JS, which is what
-`useReducedMotion` is for. `scripts/capture-projects/check-motion.mjs` asserts
-both states — run it after touching anything animated.
+**Everything goes through `src/motion/`.**
+- `tokens.ts` / `motion.css` — the only timing values on the site: durations
+  fast 150 / base 300 / slow 600 / hero 900 ms, three easings, a 60 ms
+  stagger, loop lengths as multiples of `hero`. The two files must agree;
+  `check-motion.mjs` compares them against the rendered page. No literal
+  durations in components or CSS outside `motion.css`.
+- Hooks: `useReveal` / `useInView`, `usePointer` (tilt + spotlight vars),
+  `useReducedMotion`, `useFinePointer` / `useIsTouch`, `useTabVisible`,
+  `useLoopPause`, `useDirectionSign`.
+- Animate transform, opacity and filter only.
+- Continuous loops carry `.motion-loop`; `useLoopPause` on their section sets
+  `data-motion-paused` when it is off screen or the tab is hidden, and CSS
+  pauses them. JS loops (typing) take the hook's return value.
+- Horizontal motion multiplies by `--dir` (CSS) or `useDirectionSign()` (JS)
+  so it mirrors in Arabic.
+- Headings animate per **word**, never per letter (Arabic must stay joined,
+  and letter-level motion was judged too noisy). The hero name uses
+  `<AnimatedText rise>`: opaque from the first frame, words only rise.
+- Counters are digit reels that roll once, then swap to plain text
+  (`data-counter-phase`: idle → rolling → done) so the settled number is
+  crisp and on one baseline.
+
+**Reduced motion:** nothing continuous or pointer-driven, content visible
+immediately, short opacity fades only for UI state (menu, dialog). The safety
+net is a zero-specificity `:where(*)` rule in `motion.css` — not in
+`@layer base`, where its `!important` would beat every later opt-out.
+
+Run after touching anything animated (preview server on :4173):
+`check-motion.mjs` (motion system, normal + reduced, EN/AR × 390/1440) and
+`check-site-motion.mjs` (every section, logos, dialog, language switch).
+Both wait on observable conditions — keep it that way; fixed sleeps made
+the old checks flaky.
 
 ## Architecture decisions
 
@@ -203,6 +228,10 @@ The Arabic rendering of the name is **عمر برهم**, as corrected by the own
 it consistent across `hero.name`, `nav.brandAria`, `meta.title` and
 `footer.builtBy` in `ar.json`.
 
+The hero typing phrases are Backend Developer / Full-Stack Developer /
+AI & Deep Learning Developer (owner's choice, Oct 2026), each backed by the CV:
+its title, the AI degree and the deep learning projects.
+
 Counter values in `heroStats` are either stated in the CV (150+ endpoints, 20+
 components, 60+ indicators) or counted from `src/data/projects.ts` (project
 count). Do not add a counter whose number cannot be traced to one of those.
@@ -225,8 +254,20 @@ Two `TODO:`s remain in the source:
 npm ci
 npm run build          # type-check + build; must pass with no warnings
 npm run typecheck
+npm run lint           # needs `npm ci --prefix scripts/lint` once (see below)
 npm run preview        # then check EN/AR x light/dark, and a project modal
 ```
+
+**Lint** lives in `scripts/lint/` with its own package.json: typescript-eslint
+needs TypeScript's JS API (<6.1), which TypeScript 7 no longer ships, so that
+folder carries TypeScript 6 purely as ESLint's parser. The site still builds
+and type-checks with 7. Rules are syntactic (no type info) plus React hooks.
+
+**Playwright scripts** (`scripts/capture-projects/`) launch the full Chromium
+build explicitly; the headless-shell build is often not installed.
+
+**npm on this machine** times out on IPv6. If installs hang, run them with
+`NODE_OPTIONS="--dns-result-order=ipv4first --no-network-family-autoselection"`.
 
 Worth re-checking after any layout change: no horizontal scroll at 390px wide,
 WCAG AA contrast in both themes, the modal's top edge reachable when its

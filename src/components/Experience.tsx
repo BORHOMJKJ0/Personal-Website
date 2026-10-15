@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import type { CSSProperties } from 'react';
-import { useReveal } from '@/hooks/useReveal';
 import { Logo } from './Logo';
 import { Section } from './Section';
 import { AnimatedText } from './AnimatedText';
+import { staggerDelay, useReveal } from '@/motion';
 
 type VolunteerEntry = {
   role: string;
@@ -50,7 +50,7 @@ export function Experience({ index }: { index: number }) {
             className="eyebrow rounded-full border border-line px-2.5 py-1 text-fg-subtle"
             dir="ltr"
           >
-            <AnimatedText words>{t('experience.items.trip.period')}</AnimatedText>
+            <AnimatedText>{t('experience.items.trip.period')}</AnimatedText>
           </span>
         </div>
 
@@ -90,7 +90,7 @@ function VolunteerRow({ entry, position }: { entry: VolunteerEntry; position: nu
     <li
       ref={ref}
       className="reveal motion-cascade group bg-bg p-5 transition-colors hover:bg-surface-alt sm:p-6"
-      style={{ '--reveal-delay': `${Math.min(position, 3) * 70}ms` } as CSSProperties}
+      style={{ '--reveal-delay': `${staggerDelay(Math.min(position, 3))}ms` } as CSSProperties}
     >
       <div className="flex items-start gap-4">
         <Logo org={entry.logo} name={entry.org} />

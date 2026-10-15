@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { profile } from '@/data/profile';
 import { GitHubIcon, GitLabIcon, LinkedInIcon } from './BrandIcons';
 import { Section } from './Section';
-import { useReveal } from '@/hooks/useReveal';
 import { AnimatedText } from './AnimatedText';
+import { useReveal } from '@/motion';
 
 export function Contact({ index }: { index: number }) {
   const { t } = useTranslation();

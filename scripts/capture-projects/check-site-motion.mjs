@@ -1,4 +1,7 @@
-/** Exercise real motion, Arabic shaping, university logos and keyboard dialogs.
+/** Site regression across all eight combinations: every section reveals,
+ * Arabic stays joined, university logos load, the progress bar fills, the
+ * language switch re-renders, and the project dialog opens, closes on Escape
+ * and returns focus. Motion timing itself is asserted in check-motion.mjs.
  * node check-site-motion.mjs [baseUrl]
  */
 import assert from 'node:assert/strict';
@@ -28,34 +31,23 @@ try {
       const errors = [];
       page.on('pageerror', (error) => errors.push(String(error)));
       await page.goto(`${BASE}/?lang=${lang}`, { waitUntil: 'domcontentloaded' });
-      await page.locator('[data-counter]').first().waitFor();
-      await page.locator('.stat-strip').scrollIntoViewIfNeeded();
-      if (!reduced) {
-        await page.waitForFunction(() => Number(document.querySelector('.stat-card')?.getAttribute('data-counter-run')) > 0);
-      }
-      const samples = [];
-      for (let i = 0; i < 18; i++) {
-        samples.push(await page.locator('[data-counter]').first().textContent());
-        await page.waitForTimeout(80);
-      }
-      const unique = new Set(samples);
-      assert.ok(reduced ? unique.size === 1 : unique.size > 2, `counter did not respect ${reducedMotion}`);
-      await page.waitForFunction(() => document.querySelector('[data-counter]')?.textContent === '150+');
       await page.getByRole('heading', { level: 1, name: lang === 'en' ? 'Omar Borhom' : 'عمر برهم', exact: true }).waitFor();
-      const firstRole = await page.locator('h1 + p').innerText();
-      await page.waitForTimeout(1800);
-      const secondRole = await page.locator('h1 + p').innerText();
-      assert.ok(reduced ? firstRole === secondRole : firstRole !== secondRole, 'typing preference');
+      await page.locator('.stat-strip').scrollIntoViewIfNeeded();
+      await page.waitForFunction(() => [...document.querySelectorAll('.stat-card')].every((c) => c.dataset.counterPhase === 'done'), null, { timeout: 15_000 });
+      assert.deepEqual(
+        await page.locator('.counter-final').allTextContents(),
+        await page.locator('.counter-number > .sr-only').allTextContents(),
+        'counters must land on their real values',
+      );
 
       for (const id of ['about', 'services', 'projects', 'skills', 'experience', 'education', 'contact']) {
         const heading = page.locator(`#${id} h2 .animated-text`).first();
         await heading.scrollIntoViewIfNeeded();
         await page.waitForFunction((id) => document.querySelector(`#${id} h2 .animated-text`)?.classList.contains('is-visible'), id);
-        const motion = await heading.evaluate((node) => ({
-          playing: node.getAnimations({ subtree: true }).some((a) => a.playState === 'running'),
-          names: [...node.querySelectorAll('.motion-letter')].map((n) => getComputedStyle(n).animationName),
-        }));
-        assert.ok(reduced ? motion.names.every((n) => n === 'none') : motion.playing, `${id} text motion`);
+        const names = await heading.evaluate((node) =>
+          [...node.querySelectorAll('.motion-word')].map((n) => getComputedStyle(n).animationName),
+        );
+        assert.ok(names.every((n) => n === (reduced ? 'none' : 'word-enter')), `${id} text motion: ${names}`);
       }
 
       const seals = page.locator('#experience img[src*="damascus-university.png"]');
@@ -73,20 +65,23 @@ try {
         }
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'instant' });
       });
-      await page.waitForTimeout(1300);
+      await page.waitForFunction(() => document.querySelectorAll('.reveal:not(.is-visible)').length === 0, null, { timeout: 5000 })
+        .catch(() => {});
       assert.equal(await page.locator('.reveal:not(.is-visible)').count(), 0, 'hidden content after scrolling');
-      const hiddenText = await page.locator('.animated-text:not(.is-visible)').evaluateAll((nodes) => nodes.map((node) => ({
+      const hiddenText = await page.locator('.animated-text:not(.is-visible):not(.animated-text--rise)').evaluateAll((nodes) => nodes.map((node) => ({
         text: node.querySelector('.sr-only')?.textContent,
         section: node.closest('section')?.id,
       })));
       assert.deepEqual(hiddenText, [], 'hidden text after scrolling');
       assert.ok(await page.locator('.scroll-progress').evaluate((n) => new DOMMatrix(getComputedStyle(n).transform).a > 0.98));
       if (lang === 'ar') {
-        const joined = await page.locator('h1 .motion-letter').allTextContents();
+        const joined = await page.locator('h1 .motion-word').allTextContents();
         assert.deepEqual(joined, ['عمر', 'برهم'], 'Arabic words must remain joined');
       }
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
       if (reduced) {
+        await page.waitForFunction(() => document.getAnimations().every((a) => a.playState !== 'running'), null, { timeout: 5000 })
+          .catch(() => {});
         assert.equal(await page.evaluate(() => document.getAnimations().filter((a) => a.playState === 'running').length), 0);
       }
 
@@ -99,14 +94,17 @@ try {
       await opener.click();
       const dialog = page.getByRole('dialog');
       await dialog.waitFor();
-      assert.equal(await dialog.evaluate((node) => getComputedStyle(node).animationName), reduced ? 'none' : 'content-enter');
+      // Reduced motion keeps a short opacity fade for UI state.
+      assert.equal(await dialog.evaluate((node) => getComputedStyle(node).animationName), reduced ? 'fade-enter' : 'content-enter');
       await page.keyboard.press('Escape');
       assert.equal(await dialog.count(), 0);
       assert.ok(await opener.evaluate((node) => node === document.activeElement), 'focus must return to the project');
       if (!reduced && width === 1440) {
         const card = page.locator('.tilt-card').first();
         await card.hover({ position: { x: 20, y: 20 } });
-        await page.waitForTimeout(250);
+        await page.waitForFunction((n) => n.style.getPropertyValue('--spot-x') !== '', await card.elementHandle());
+        // Tilt eases in over --dur-fast; wait for the transition to settle.
+        await card.evaluate((n) => Promise.all(n.getAnimations().map((a) => a.finished)));
         assert.ok(await card.evaluate((node) => !new DOMMatrix(getComputedStyle(node).transform).is2D), 'pointer tilt must create real depth');
         assert.ok(await card.evaluate((node) => node.style.getPropertyValue('--spot-x').length > 0), 'pointer highlight');
         await page.mouse.move(0, 0);

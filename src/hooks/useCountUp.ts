@@ -1,29 +1,27 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useReducedMotion } from './useReducedMotion';
+import { DURATION, useReducedMotion } from '@/motion';
 
 /**
- * Counts to `to` on entry, on return to the viewport, or on explicit replay.
+ * Counter phases. The digits themselves are CSS reels (see Stats.tsx); this
+ * hook only decides when they roll:
  *
- * Driven by requestAnimationFrame against a timestamp rather than a fixed
- * step, so the duration holds regardless of frame rate. Under
- * `prefers-reduced-motion` the final value is set immediately — the number is
- * the content, so it must never be withheld.
+ *   idle     reels parked at blank/zero, no transition
+ *   rolling  reels transition to the target digits
+ *   done     reels replaced by plain text, so the number is crisp and every
+ *            digit sits on one baseline
+ *
+ * Rolls on entry, again on each return to the viewport, and on replay. Under
+ * `prefers-reduced-motion` it is `done` from the start — the number is the
+ * content, so it is never withheld.
  */
-export function useCountUp(to: number, {
-  duration = 2400,
-  delay = 0,
-  trigger = 0,
-}: { duration?: number; delay?: number; trigger?: number } = {}) {
+export type CounterPhase = 'idle' | 'rolling' | 'done';
+
+export function useCountUp({ delay = 0, trigger = 0 }: { delay?: number; trigger?: number } = {}) {
   const ref = useRef<HTMLElement | null>(null);
   const reduced = useReducedMotion();
   const replayRef = useRef<() => void>(() => {});
-  const [state, setState] = useState(() => ({
-    value: reduced ? to : 0,
-    previous: reduced ? to : 0,
-    progress: reduced ? 1 : 0,
-    playing: false,
-    runId: 0,
-  }));
+  const [phase, setPhase] = useState<CounterPhase>('idle');
+  const [runId, setRunId] = useState(0);
   const replay = useCallback(() => replayRef.current(), []);
 
   useEffect(() => {
@@ -37,42 +35,28 @@ export function useCountUp(to: number, {
       cancelAnimationFrame(frame);
       clearTimeout(timer);
     };
-
     const finish = () => {
       cancel();
-      setState((current) => ({ ...current, previous: current.value, value: to, progress: 1, playing: false }));
+      setPhase('done');
     };
 
-    if (
-      typeof IntersectionObserver === 'undefined' ||
-      reduced
-    ) {
-      finish();
-      return;
-    }
+    // Reduced motion: the returned phase is forced to `done` below.
+    if (typeof IntersectionObserver === 'undefined' || reduced) return;
 
     const run = () => {
       if (!visible) return;
       cancel();
-      setState((current) => ({ value: 0, previous: 0, progress: 0, playing: true, runId: current.runId + 1 }));
-      timer = setTimeout(() => {
-        const start = performance.now();
-        let lastPaint = start - 70;
-        const tick = (now: number) => {
-          const t = Math.min(1, (now - start) / duration);
-          const eased = 1 - (1 - t) ** 3;
-          // Limit React updates; CSS interpolates the digit changes and progress.
-          if (now - lastPaint >= 70 || t === 1) {
-            setState((current) => ({
-              ...current, previous: current.value, value: Math.round(to * eased),
-              progress: eased, playing: t < 1,
-            }));
-            lastPaint = now;
-          }
-          if (t < 1) frame = requestAnimationFrame(tick);
-        };
-        frame = requestAnimationFrame(tick);
-      }, delay);
+      setPhase('idle');
+      setRunId((id) => id + 1);
+      // Two frames: the parked position must paint before the transition
+      // starts, or the browser coalesces both and nothing rolls.
+      frame = requestAnimationFrame(() => {
+        frame = requestAnimationFrame(() => {
+          setPhase('rolling');
+          // The longest reel (ones place) takes hero + slow; see motion.css.
+          timer = setTimeout(finish, delay + DURATION.hero + DURATION.slow);
+        });
+      });
     };
     replayRef.current = run;
 
@@ -97,7 +81,8 @@ export function useCountUp(to: number, {
       cancel();
       replayRef.current = () => {};
     };
-  }, [to, duration, delay, trigger, reduced]);
+  }, [delay, trigger, reduced]);
 
-  return { ref, ...state, replay } as const;
+  const settled = reduced || typeof IntersectionObserver === 'undefined';
+  return { ref, phase: settled ? ('done' as const) : phase, runId, replay } as const;
 }

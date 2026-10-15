@@ -1,7 +1,7 @@
 import { ArrowUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Container } from './Section';
-import { useReveal } from '@/hooks/useReveal';
+import { useReveal } from '@/motion';
 
 export function Footer() {
   const { t } = useTranslation();

@@ -41,10 +41,9 @@
     "statsLabel": "أرقام مختارة من أعمالي",
     "photoAlt": "عمر برهم",
     "typingPhrases": [
-      "مطوّر Full-Stack بتوجّه Backend",
-      "واجهات برمجية بـ Laravel",
-      "لوحات تحكّم بـ React",
-      "تعلّم عميق بـ PyTorch"
+      "مطوّر Backend",
+      "مطوّر Full-Stack",
+      "مطوّر ذكاء اصطناعي وتعلّم عميق"
     ]
   },
   "stats": {

@@ -1,5 +1,7 @@
+import { useRef } from 'react';
 import { ArrowRight, Download, MapPin } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useLoopPause } from '@/motion';
 import { profile } from '@/data/profile';
 import { assetUrl } from '@/lib/assets';
 import { Avatar } from './Avatar';
@@ -15,6 +17,9 @@ const ICON_LINK =
 
 export function Hero() {
   const { t, i18n } = useTranslation();
+  const sectionRef = useRef<HTMLElement | null>(null);
+  // Continuous hero motion (glow, orbit, drift, typing) stops when scrolled away.
+  const loopsRunning = useLoopPause(sectionRef);
 
   const socials = [
     { href: profile.links.github, Icon: GitHubIcon, label: 'GitHub' },
@@ -28,9 +33,9 @@ export function Hero() {
   }) as string[];
 
   return (
-    <section id="top" className="relative overflow-hidden pt-28 pb-16 sm:pt-32 sm:pb-24">
+    <section ref={sectionRef} id="top" className="relative overflow-hidden pt-28 pb-16 sm:pt-32 sm:pb-24">
       <div className="grid-backdrop pointer-events-none absolute inset-0 -z-10" aria-hidden="true" />
-      <div className="hero-ambient" aria-hidden="true"><span /><span /></div>
+      <div className="hero-ambient" aria-hidden="true"><span className="motion-loop" /><span className="motion-loop" /></div>
       <FloatingTech />
 
       <Container>
@@ -38,7 +43,7 @@ export function Hero() {
           <div className="min-w-0 flex-1">
             <p className="hero-enter eyebrow inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-fg-muted">
               <span className="relative grid size-2 place-items-center" aria-hidden="true">
-                <span className="absolute size-2 animate-ping rounded-full bg-accent/60" />
+                <span className="motion-loop absolute size-2 animate-ping rounded-full bg-accent/60" />
                 <span className="size-2 rounded-full bg-accent" />
               </span>
               {t('hero.availability')}
@@ -46,23 +51,27 @@ export function Hero() {
 
             {/* The name is the loudest thing on the page, in both languages. */}
             <h1 className="mt-6 text-display leading-[0.92] font-bold tracking-tight text-fg">
-              <AnimatedText>{t('hero.name')}</AnimatedText>
+              <AnimatedText rise>{t('hero.name')}</AnimatedText>
             </h1>
 
             <p className="hero-enter hero-enter-1 mt-4 text-lg font-medium text-fg sm:text-2xl">
-              <TypingRole key={i18n.resolvedLanguage} phrases={phrases.length ? phrases : [t('hero.role')]} />
+              <TypingRole
+                key={i18n.resolvedLanguage}
+                phrases={phrases.length ? phrases : [t('hero.role')]}
+                running={loopsRunning}
+              />
             </p>
 
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-fg-muted sm:text-lg">
-              <AnimatedText words>{t('hero.intro')}</AnimatedText>
+            <p className="hero-enter hero-enter-2 mt-5 max-w-xl text-base leading-relaxed text-fg-muted sm:text-lg">
+              {t('hero.intro')}
             </p>
 
-            <p className="hero-enter hero-enter-2 eyebrow mt-5 inline-flex items-center gap-1.5 text-fg-subtle">
+            <p className="hero-enter hero-enter-3 eyebrow mt-5 inline-flex items-center gap-1.5 text-fg-subtle">
               <MapPin className="size-3.5" aria-hidden="true" />
               {t('hero.location')}
             </p>
 
-            <div className="hero-enter hero-enter-3 mt-8 flex flex-wrap items-center gap-3">
+            <div className="hero-enter hero-enter-4 mt-8 flex flex-wrap items-center gap-3">
               <a
                 href="#projects"
                 className="motion-interactive group inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-semibold text-accent-fg transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-accent-hover"

@@ -1,0 +1,473 @@
+/*
+  Motion system. Every animation on the site reads its timing from here.
+
+  Tokens mirror src/motion/tokens.ts (check-site-motion.mjs compares the two).
+  Rules:
+    - animate transform, opacity and filter only;
+    - continuous loops carry `.motion-loop` and stop while their section is
+      off screen or the tab is hidden (useLoopPause sets data-motion-paused);
+    - horizontal motion multiplies by --dir so it mirrors in Arabic;
+    - prefers-reduced-motion: nothing continuous or pointer-driven, content
+      visible immediately, short opacity fades for UI state only.
+
+  Unlayered on purpose: it must override Tailwind utilities (e.g. lg:block on
+  a layer that reduced motion removes).
+*/
+
+:root {
+  --dur-fast: 150ms;
+  --dur-base: 300ms;
+  --dur-slow: 600ms;
+  --dur-hero: 900ms;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --stagger: 60ms;
+
+  /* Continuous loops, as multiples of the hero duration. */
+  --loop-caret: calc(var(--dur-hero) + var(--dur-fast));
+  --loop-drift: calc(var(--dur-hero) * 8);
+  --loop-orbit: calc(var(--dur-hero) * 10);
+  --loop-ambient: calc(var(--dur-hero) * 14);
+
+  /* Horizontal direction: 1 in LTR, -1 in RTL. */
+  --dir: 1;
+}
+
+[dir='rtl'] {
+  --dir: -1;
+}
+
+[data-motion-paused] .motion-loop,
+[data-motion-paused] .motion-loop *,
+[data-motion-paused].motion-loop {
+  animation-play-state: paused !important;
+}
+
+/* ── Entrances ─────────────────────────────────────────────────────────── */
+
+/* Scroll reveal: useReveal adds .is-visible once. */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity var(--dur-slow) var(--ease-out) var(--reveal-delay, 0ms),
+    transform var(--dur-slow) var(--ease-out) var(--reveal-delay, 0ms),
+    background-color var(--dur-base) var(--ease-standard),
+    border-color var(--dur-base) var(--ease-standard),
+    box-shadow var(--dur-base) var(--ease-standard);
+}
+.reveal.is-visible,
+/* Keyboard focus never waits for a reveal. */
+.reveal:focus-within {
+  opacity: 1;
+  transform: none;
+}
+
+/* Children of a revealed card cascade in, one stagger step apart. */
+.motion-cascade.is-visible > *,
+.motion-cascade.is-visible :is(ul, dl) > *,
+.dialog-content > * {
+  animation: content-enter var(--dur-slow) var(--ease-out) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + var(--stagger) * var(--cascade-step, 1));
+}
+:is(.motion-cascade, .dialog-content) > :nth-child(2),
+.motion-cascade :is(ul, dl) > :nth-child(2) { --cascade-step: 2; }
+:is(.motion-cascade, .dialog-content) > :nth-child(3),
+.motion-cascade :is(ul, dl) > :nth-child(3) { --cascade-step: 3; }
+:is(.motion-cascade, .dialog-content) > :nth-child(n + 4),
+.motion-cascade :is(ul, dl) > :nth-child(n + 4) { --cascade-step: 4; }
+
+/* Word-level text entrance (AnimatedText). */
+.motion-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+.animated-text:not(.animated-text--rise) .motion-word {
+  opacity: 0;
+  transform: translateY(0.35em);
+}
+.animated-text.is-visible .motion-word {
+  animation: word-enter var(--dur-slow) var(--ease-out) var(--word-delay, 0ms) both;
+}
+/* The hero name: opaque from the first frame, words only rise. */
+.animated-text--rise .motion-word {
+  animation: word-rise var(--dur-hero) var(--ease-out) var(--word-delay, 0ms) both;
+}
+
+/* Hero first load. Steps are stagger multiples so the order reads clearly. */
+.hero-enter {
+  animation: content-enter var(--dur-hero) var(--ease-out) both;
+}
+.hero-enter-1 { animation-delay: calc(var(--stagger) * 2); }
+.hero-enter-2 { animation-delay: calc(var(--stagger) * 3); }
+.hero-enter-3 { animation-delay: calc(var(--stagger) * 4); }
+.hero-enter-4 { animation-delay: calc(var(--stagger) * 5); }
+
+.hero-portrait {
+  animation: portrait-enter var(--dur-hero) var(--ease-out) var(--dur-fast) both;
+}
+
+.site-header {
+  animation: header-enter var(--dur-slow) var(--ease-out) both;
+}
+.header-links > a {
+  animation: content-enter var(--dur-slow) var(--ease-out) both;
+}
+
+.reveal.is-visible .section-line {
+  transform-origin: left;
+  animation: rule-grow var(--dur-hero) var(--ease-out) var(--dur-fast) both;
+}
+[dir='rtl'] .reveal.is-visible .section-line {
+  transform-origin: right;
+}
+
+.mobile-menu:not([hidden]),
+.modal-backdrop {
+  animation: fade-enter var(--dur-base) var(--ease-standard) both;
+}
+.modal-panel {
+  animation: content-enter var(--dur-base) var(--ease-out) both;
+}
+
+/* ── Continuous loops (hero only) ──────────────────────────────────────── */
+
+.portrait-frame { animation: portrait-drift var(--loop-drift) ease-in-out var(--dur-hero) infinite; }
+.portrait-glow { animation: glow-breathe var(--loop-drift) ease-in-out infinite; }
+.portrait-orbit {
+  position: absolute;
+  inset: -6px;
+  width: calc(100% + 12px);
+  height: calc(100% + 12px);
+  pointer-events: none;
+}
+.portrait-orbit rect {
+  stroke: var(--color-accent);
+  stroke-width: 1;
+  stroke-dasharray: 0.22 0.78;
+  opacity: 0.65;
+  animation: portrait-orbit var(--loop-orbit) linear infinite;
+}
+
+.hero-ambient { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.hero-ambient span {
+  position: absolute;
+  top: 12%;
+  inset-inline-start: -8%;
+  width: min(52vw, 580px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  opacity: 0.35;
+  background: radial-gradient(circle, var(--color-accent-soft), transparent 70%);
+  animation: ambient-drift var(--loop-ambient) ease-in-out infinite alternate;
+}
+.hero-ambient span:last-child {
+  top: 40%;
+  inset-inline-start: 65%;
+  animation-delay: calc(var(--loop-ambient) / -2);
+  animation-direction: alternate-reverse;
+}
+
+.float-chip {
+  animation: float-drift var(--loop-drift) ease-in-out infinite;
+}
+
+.typing-caret {
+  height: 1em;
+  animation: caret-blink var(--loop-caret) steps(2, start) infinite;
+}
+
+/* ── Counters: one roll into place ─────────────────────────────────────── */
+
+/*
+  Every digit, the reels and the suffix share one line box (height and
+  line-height --digit-h, aligned to the top), so they share one baseline.
+  When the roll ends the reels are swapped for plain text (.counter-final).
+*/
+.counter-number { --digit-h: 1.15em; line-height: var(--digit-h); }
+.counter-reels {
+  display: inline-flex;
+  align-items: flex-start;
+  vertical-align: top;
+}
+.counter-reel {
+  display: inline-block;
+  width: 1ch;
+  height: var(--digit-h);
+  overflow: hidden;
+}
+.counter-strip {
+  display: block;
+  transform: translateY(calc(var(--reel-index, 0) * var(--digit-h) * -1));
+}
+.counter-strip > span {
+  display: block;
+  height: var(--digit-h);
+  white-space: pre;
+  text-align: center;
+}
+.counter-suffix { display: inline-block; height: var(--digit-h); }
+.counter-final { display: inline-block; height: var(--digit-h); }
+
+[data-counter-phase='rolling'] .counter-strip {
+  transition: transform var(--dur-hero) var(--ease-out) var(--counter-delay, 0ms);
+}
+/* The ones place travels furthest, so it gets the longest roll. */
+[data-counter-phase='rolling'] .counter-strip--ones {
+  transition-duration: calc(var(--dur-hero) + var(--dur-slow));
+}
+
+.stat-card { position: relative; overflow: hidden; }
+.stat-progress {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--color-accent);
+  opacity: 0.65;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+[dir='rtl'] .stat-progress { transform-origin: right; }
+[data-counter-phase='rolling'] .stat-progress,
+[data-counter-phase='done'] .stat-progress {
+  transform: scaleX(1);
+}
+[data-counter-phase='rolling'] .stat-progress {
+  transition: transform calc(var(--dur-hero) + var(--dur-slow)) var(--ease-out) var(--counter-delay, 0ms);
+}
+
+/* ── Interaction ───────────────────────────────────────────────────────── */
+
+.motion-interactive,
+.motion-badge,
+.skill-item {
+  transition:
+    translate var(--dur-fast) var(--ease-standard),
+    color var(--dur-fast) var(--ease-standard),
+    background-color var(--dur-fast) var(--ease-standard),
+    border-color var(--dur-fast) var(--ease-standard),
+    box-shadow var(--dur-fast) var(--ease-standard);
+}
+.org-logo {
+  transition:
+    rotate var(--dur-base) var(--ease-out),
+    scale var(--dur-base) var(--ease-out);
+}
+
+/* Shimmer sweep across buttons on hover. */
+.motion-interactive { position: relative; overflow: hidden; }
+.stats-replay { position: absolute; }
+.motion-interactive::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-150%);
+  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.3) 50%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Cursor spotlight and tilt on cards (usePointer writes the variables). */
+.tilt-card { position: relative; }
+.tilt-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(180px circle at var(--spot-x, 50%) var(--spot-y, 50%), var(--color-accent), transparent 70%);
+  transition: opacity var(--dur-base) var(--ease-standard);
+}
+
+.nav-link { position: relative; }
+.nav-link::after {
+  content: '';
+  position: absolute;
+  inset-inline: 12px;
+  bottom: 3px;
+  height: 1px;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transition: transform var(--dur-base) var(--ease-out);
+}
+.nav-link[aria-current='true']::after { transform: scaleX(1); }
+
+.scroll-progress {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  pointer-events: none;
+}
+[dir='rtl'] .scroll-progress { transform-origin: right; }
+
+.card-media video { transition: opacity var(--dur-base) var(--ease-standard); }
+.card-media img { transition: transform var(--dur-slow) var(--ease-out); }
+
+@media (hover: hover) and (pointer: fine) {
+  .motion-interactive:hover { translate: 0 -3px; }
+  .motion-badge:hover,
+  .skill-item:hover {
+    translate: 0 -2px;
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+  .group:hover .org-logo { rotate: -4deg; scale: 1.08; }
+  .nav-link:hover::after { transform: scaleX(1); }
+  .motion-interactive:hover::after { animation: button-sweep var(--dur-slow) var(--ease-standard) both; }
+  .stats-replay:hover svg { animation: replay-spin var(--dur-slow) var(--ease-out); }
+  .group:hover .service-icon svg { animation: icon-spring var(--dur-slow) var(--ease-out) both; }
+  .group:hover .card-media img { transform: scale(1.035); }
+
+  .tilt-card.is-visible:hover {
+    transform: perspective(900px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+    transition:
+      transform var(--dur-fast) var(--ease-out),
+      opacity var(--dur-slow) var(--ease-out),
+      border-color var(--dur-base) var(--ease-standard),
+      box-shadow var(--dur-base) var(--ease-standard);
+  }
+  .tilt-card:hover::before { opacity: 0.07; }
+}
+
+/* ── Keyframes ─────────────────────────────────────────────────────────── */
+
+@keyframes content-enter {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes word-enter {
+  from { opacity: 0; transform: translateY(0.35em); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes word-rise {
+  from { transform: translateY(0.18em); }
+  to { transform: none; }
+}
+@keyframes fade-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes header-enter {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes portrait-enter {
+  from { opacity: 0; transform: translateX(calc(var(--dir) * 24px)) scale(0.94); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes rule-grow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@keyframes portrait-drift {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes glow-breathe {
+  0%, 100% { opacity: 0.55; transform: scale(0.92); }
+  50% { opacity: 1; transform: scale(1.12); }
+}
+@keyframes portrait-orbit {
+  to { stroke-dashoffset: -1; }
+}
+@keyframes ambient-drift {
+  from { transform: translate(0, 0) scale(0.95); }
+  to { transform: translate(calc(var(--dir) * 40px), -24px) scale(1.1); }
+}
+@keyframes float-drift {
+  0%, 100% { transform: translateY(-7px); }
+  50% { transform: translateY(7px); }
+}
+@keyframes caret-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+@keyframes button-sweep {
+  from { transform: translateX(-150%); }
+  to { transform: translateX(150%); }
+}
+@keyframes replay-spin {
+  to { transform: rotate(-360deg); }
+}
+@keyframes icon-spring {
+  0%, 100% { transform: none; }
+  30% { transform: rotate(-12deg) scale(1.15); }
+  60% { transform: rotate(8deg); }
+}
+
+/* ── Reduced motion ────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  /*
+    Safety net, at zero specificity so the explicit fades below can opt out.
+    (It used to live in @layer base, where !important beats everything
+    later and nothing could opt out.)
+  */
+  :where(*, *::before, *::after) {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Content is simply there. */
+  .reveal,
+  .animated-text .motion-word,
+  .motion-cascade.is-visible > *,
+  .motion-cascade.is-visible :is(ul, dl) > *,
+  .dialog-content > *,
+  .hero-enter,
+  .hero-portrait,
+  .site-header,
+  .header-links > a,
+  .section-line {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  /* Nothing continuous, nothing pointer-driven. Loops freeze in place;
+     purely decorative layers go entirely. */
+  .motion-loop,
+  .motion-loop * {
+    animation: none !important;
+  }
+  .float-layer,
+  .portrait-orbit,
+  .hero-ambient,
+  .card-media video {
+    display: none !important;
+  }
+  .typing-caret { display: none; }
+  .motion-interactive::after,
+  .stats-replay svg,
+  .service-icon svg { animation: none !important; }
+  .tilt-card,
+  .group:hover .card-media img { transform: none !important; }
+  .tilt-card::before { display: none; }
+  .motion-interactive,
+  .motion-badge,
+  .skill-item,
+  .org-logo {
+    translate: none !important;
+    rotate: none !important;
+    scale: none !important;
+  }
+
+  /* Short fades are fine for UI state. */
+  .mobile-menu:not([hidden]),
+  .modal-backdrop,
+  .modal-panel {
+    animation: fade-enter var(--dur-fast) linear both !important;
+  }
+}

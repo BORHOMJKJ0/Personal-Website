@@ -2,7 +2,9 @@
  * Decorative tech chips drifting behind the hero.
  *
  * Purely ornamental: `aria-hidden`, pointer-events off, and the whole layer is
- * removed under `prefers-reduced-motion` (see `.float-layer` in index.css).
+ * removed under `prefers-reduced-motion` (see `.float-layer` in motion.css).
+ * Desktop only: on narrow screens the chips were clipped at the edges and sat
+ * over the copy. (Phase 3 replaces them with icons orbiting the portrait.)
  * Positions are percentages of the hero box so the layer scales with it, and
  * each chip carries its own delay so they never move in lockstep.
  */
@@ -17,11 +19,11 @@ const CHIPS = [
 
 export function FloatingTech() {
   return (
-    <div className="float-layer pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+    <div className="float-layer pointer-events-none absolute inset-0 -z-10 hidden lg:block" aria-hidden="true">
       {CHIPS.map((chip) => (
         <span
           key={chip.label}
-          className="float-chip eyebrow absolute rounded-full border border-line bg-surface/70 px-2.5 py-1 text-fg-subtle backdrop-blur-sm"
+          className="float-chip motion-loop eyebrow absolute rounded-full border border-line bg-surface/70 px-2.5 py-1 text-fg-subtle backdrop-blur-sm"
           style={{
             top: chip.top,
             insetInlineStart: chip.inlineStart,
