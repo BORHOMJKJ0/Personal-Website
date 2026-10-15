@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import './fonts.css';
 
 /* Class-based dark mode (the inline script in index.html sets `.dark`). */
 @custom-variant dark (&:where(.dark, .dark *));
@@ -74,21 +75,37 @@
   --color-accent-soft: var(--color-accent-soft);
   --color-ring: var(--color-ring);
 
-  --font-display: 'Space Grotesk', 'IBM Plex Sans Arabic', ui-sans-serif, system-ui, sans-serif;
-  --font-sans: 'Inter', 'IBM Plex Sans Arabic', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-mono: ui-monospace, 'SFMono-Regular', 'Menlo', 'Cascadia Mono', 'Consolas', monospace;
-
   --shadow-card: var(--shadow-card);
 
   --text-display: clamp(2.5rem, 8vw, 5.25rem);
   --text-h2: clamp(1.75rem, 4vw, 2.5rem);
 }
 
-/* Arabic swaps the Latin display/body faces for one well-matched Arabic face. */
+/*
+  Fonts are a plain @theme (not inline) so `font-display` / `font-sans`
+  compile to var(--font-*) and follow the Arabic override below. Inlined, the
+  utilities carried the Latin stack into Arabic pages and pulled in Space
+  Grotesk for the counters and modal titles.
+*/
+@theme {
+  --font-display: 'Space Grotesk', 'Space Grotesk Fallback', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', 'Inter Fallback', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', 'Menlo', 'Cascadia Mono', 'Consolas', monospace;
+}
+
+/*
+  Arabic swaps the Latin display/body faces for one well-matched Arabic face;
+  its own Latin subset covers tech names, so Inter/Space Grotesk are never
+  fetched on Arabic pages. Fallbacks are defined in fonts.css.
+*/
 :root:lang(ar),
 [lang='ar'] {
-  --font-display: 'IBM Plex Sans Arabic', 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
-  --font-sans: 'IBM Plex Sans Arabic', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display:
+    'IBM Plex Sans Arabic', 'Plex Arabic Fallback', 'Plex Arabic Fallback Tahoma',
+    'Plex Latin Fallback', ui-sans-serif, system-ui, sans-serif;
+  --font-sans:
+    'IBM Plex Sans Arabic', 'Plex Arabic Fallback', 'Plex Arabic Fallback Tahoma',
+    'Plex Latin Fallback', ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -188,6 +205,18 @@
     font-size: 0.75rem;
     letter-spacing: normal;
     text-transform: none;
+  }
+
+  /*
+    The language toggle's "العربية" label on English pages uses the system
+    Arabic face: rendering it in IBM Plex Sans Arabic would download the
+    Arabic web font on every English page view for one word. No tracking:
+    it breaks the cursive joins (see the rule above).
+  */
+  .eyebrow.lang-label-ar {
+    font-family: 'Segoe UI', Tahoma, 'Geeza Pro', 'Noto Sans Arabic', system-ui, sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: normal;
   }
 
   /* Faint engineering grid, used behind the hero only. */

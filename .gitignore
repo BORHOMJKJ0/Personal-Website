@@ -16,3 +16,7 @@ tsconfig.tsbuildinfo
 
 # Capture tooling deps (not part of the site build)
 scripts/capture-projects/node_modules/
+
+# Local audit output (screenshots, Lighthouse runs, tooling). Must stay ignored:
+# Tailwind scans every non-ignored file for class names.
+artifacts/

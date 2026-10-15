@@ -1,0 +1,223 @@
+/*
+  Self-hosted faces (SIL OFL 1.1, licences beside the files in assets/fonts).
+
+  Subsets: Latin faces carry Google's "latin" range; the Arabic face is split
+  into an Arabic file and a Latin file. A browser only fetches a face when the
+  page renders a character in its unicode-range with that family, so English
+  pages never download Arabic and Arabic pages never download Inter/Space
+  Grotesk. The head script in index.html preloads the two faces that paint
+  first for the current language.
+
+  Weight ranges deliberately match what Google Fonts used to serve
+  (Inter 400–600, Space Grotesk 500–700), so `font-bold` on an Inter element
+  renders exactly as it did before self-hosting.
+*/
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url('./assets/fonts/inter-latin.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500 700;
+  font-display: swap;
+  src: url('./assets/fonts/space-grotesk-latin.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* IBM Plex Sans Arabic — Arabic glyphs, one file per weight. */
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/plex-arabic-arabic-400.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('./assets/fonts/plex-arabic-arabic-500.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./assets/fonts/plex-arabic-arabic-600.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./assets/fonts/plex-arabic-arabic-700.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+}
+
+/* IBM Plex Sans Arabic — its Latin glyphs, for tech names inside Arabic copy. */
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/plex-arabic-latin-400.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('./assets/fonts/plex-arabic-latin-500.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./assets/fonts/plex-arabic-latin-600.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./assets/fonts/plex-arabic-latin-700.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/*
+  Metric-matched fallbacks. While a web face is loading (font-display: swap)
+  the text paints in a local font scaled to the same average glyph width and
+  line box, so the swap does not move anything.
+
+  Latin values: Capsize metrics (xWidthAvg ratio, as next/font computes them),
+  per weight band — bold Arial is wider than regular, so semibold/bold text
+  uses a face built from Arial Bold. Arabic values: measured in Chromium over
+  every Arabic string in ar.json (canvas width ratio). Segoe UI is the closest
+  common match; Tahoma covers macOS. The Arabic fallbacks are limited to the
+  Arabic range so Latin inside Arabic copy falls through to the Latin one.
+
+  Overrides are divided by size-adjust because the browser scales them by it.
+*/
+@font-face {
+  font-family: 'Inter Fallback';
+  font-weight: 100 500;
+  src: local('Arial'), local('ArialMT'), local('Roboto'), local('Roboto-Regular');
+  size-adjust: 107.12%;
+  ascent-override: 90.44%;
+  descent-override: 22.52%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Inter Fallback';
+  font-weight: 600 900;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 101.53%;
+  ascent-override: 95.42%;
+  descent-override: 23.76%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Space Grotesk Fallback';
+  font-weight: 100 500;
+  src: local('Arial'), local('ArialMT'), local('Roboto'), local('Roboto-Regular');
+  size-adjust: 109.69%;
+  ascent-override: 89.71%;
+  descent-override: 26.62%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Space Grotesk Fallback';
+  font-weight: 600 900;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 102.09%;
+  ascent-override: 96.39%;
+  descent-override: 28.6%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Plex Arabic Fallback';
+  font-weight: 100 500;
+  src: local('Segoe UI'), local('SegoeUI');
+  size-adjust: 91.34%;
+  ascent-override: 119.33%;
+  descent-override: 45.98%;
+  line-gap-override: 0%;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFC;
+}
+@font-face {
+  font-family: 'Plex Arabic Fallback';
+  font-weight: 600 900;
+  src: local('Segoe UI Bold'), local('SegoeUI-Bold');
+  size-adjust: 96.26%;
+  ascent-override: 113.24%;
+  descent-override: 43.63%;
+  line-gap-override: 0%;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFC;
+}
+@font-face {
+  font-family: 'Plex Arabic Fallback Tahoma';
+  font-weight: 100 500;
+  src: local('Tahoma');
+  size-adjust: 89.72%;
+  ascent-override: 121.49%;
+  descent-override: 46.81%;
+  line-gap-override: 0%;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFC;
+}
+@font-face {
+  font-family: 'Plex Arabic Fallback Tahoma';
+  font-weight: 600 900;
+  src: local('Tahoma Bold'), local('Tahoma-Bold');
+  size-adjust: 84.32%;
+  ascent-override: 129.27%;
+  descent-override: 49.81%;
+  line-gap-override: 0%;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFC;
+}
+@font-face {
+  font-family: 'Plex Latin Fallback';
+  font-weight: 100 500;
+  src: local('Arial'), local('ArialMT'), local('Roboto'), local('Roboto-Regular');
+  size-adjust: 101.17%;
+  ascent-override: 107.25%;
+  descent-override: 41.02%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Plex Latin Fallback';
+  font-weight: 600 900;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 98.55%;
+  ascent-override: 110.1%;
+  descent-override: 42.11%;
+  line-gap-override: 0%;
+}

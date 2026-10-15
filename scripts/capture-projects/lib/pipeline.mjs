@@ -75,10 +75,15 @@ export function findFfmpeg() {
  * Playwright pins an exact Chromium revision. If that one is missing but
  * another is already downloaded, use it rather than blocking on a fresh
  * several-hundred-megabyte download.
+ *
+ * The pinned full browser is returned explicitly rather than as `undefined`:
+ * left to itself, headless Playwright launches the separate
+ * chromium_headless_shell build, which `playwright install chromium` does not
+ * always fetch, and every script then dies with "Executable doesn't exist".
  */
 function chromiumExecutable() {
   const pinned = chromium.executablePath();
-  if (existsSync(pinned)) return undefined; // let Playwright use its own
+  if (existsSync(pinned)) return pinned;
 
   const base = join(process.env.LOCALAPPDATA ?? '', 'ms-playwright');
   if (!existsSync(base)) return undefined;

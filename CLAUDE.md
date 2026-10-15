@@ -31,7 +31,7 @@ claims that the CV does not support.
 | React | 19 | — |
 | Vite | 8 (rolldown) | Static output, fast builds |
 | TypeScript | 7 | Note: `baseUrl` was **removed** in TS 7; `paths` in `tsconfig.app.json` resolve relative to the tsconfig file |
-| Tailwind CSS | 4 | CSS-first config via `@theme inline`, no `tailwind.config.js` |
+| Tailwind CSS | 4 | CSS-first config via `@theme inline` (fonts: plain `@theme`, see *Fonts*), no `tailwind.config.js` |
 | react-i18next | 17 | Two bundled JSON locales, no lazy loading (they are small) |
 | lucide-react | 1 | UI icons only — **v1 dropped all brand icons**, so GitHub/GitLab/LinkedIn are inline SVG in `src/components/BrandIcons.tsx` |
 
@@ -116,6 +116,29 @@ These are easy to break and were each fixed once already:
 6. **Tight letter-spacing on headings is Latin-only** — `[dir='rtl'] h1…h4`
    resets it to `normal`.
 
+## Fonts
+
+Self-hosted WOFF2 in `src/assets/fonts/` (OFL licences beside them), declared
+in `src/fonts.css`. **Do not re-add Google Fonts** — its render-blocking
+stylesheet and late swap were the whole of the mobile CLS (0.14) and most of
+the FCP; self-hosting took local mobile Lighthouse from 87 to 96.
+
+- Subsets split by script. English pages fetch only Inter + Space Grotesk;
+  Arabic pages only IBM Plex Sans Arabic (Arabic + its Latin subset). Keep it
+  that way: no Latin family in the Arabic stack, no Arabic family in the
+  English stack. The language toggle's "العربية" label uses the system Arabic
+  face for the same reason (`.lang-label-ar`).
+- The inline head script preloads two faces for the current language. Their
+  hashed URLs are injected at build time by `fontPreloads()` in
+  `vite.config.ts` (the `__FONT_PRELOADS__` placeholder).
+- Each family has a metric-matched local fallback (`* Fallback` faces, one
+  per weight band). If you swap a font, recompute its overrides; the numbers
+  and their source are in the comment in `fonts.css`.
+- Font tokens live in a plain `@theme`, not `@theme inline`: inlined, the
+  `font-display` utility carried the Latin stack into Arabic pages.
+- `scripts/capture-projects/check-fonts.mjs` asserts all of the above and
+  CLS ≤ 0.02 on a throttled connection.
+
 ## Gotchas worth remembering
 
 - **Modal overflow**: the dialog backdrop uses `items-start` plus `my-auto` on
@@ -126,6 +149,8 @@ These are easy to break and were each fixed once already:
   for that reason; the skills grid uses `lg:last:col-span-3` to fill its last row.
 - **Tailwind v4 scans the project for class names** and respects `.gitignore`.
   Without `dist` ignored it scans its own previous output and the CSS grows.
+  The same applies to `artifacts/` (local audit output), which is why it is
+  ignored too.
 - **`npm run build` runs `prebuild`**, which regenerates `public/sitemap.xml`
   and `public/robots.txt` from `SITE_URL` in `src/data/site.ts`. One value,
   one place.

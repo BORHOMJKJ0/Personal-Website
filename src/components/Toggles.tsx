@@ -44,7 +44,10 @@ export function LanguageToggle() {
       title={t('a11y.languageToggle')}
       lang={target}
     >
-      <span className="eyebrow" dir={target === 'ar' ? 'rtl' : 'ltr'}>
+      <span
+        className={target === 'ar' ? 'eyebrow lang-label-ar' : 'eyebrow'}
+        dir={target === 'ar' ? 'rtl' : 'ltr'}
+      >
         {target === 'ar' ? 'العربية' : 'English'}
       </span>
     </button>

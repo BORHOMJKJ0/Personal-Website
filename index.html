@@ -72,15 +72,23 @@
         } catch (e) {
           /* private mode / blocked storage: fall through to the markup defaults */
         }
+
+        // Preload the faces that paint first, for this language only. The map
+        // of hashed URLs is injected at build time (fontPreloads in
+        // vite.config.ts); English pages never fetch the Arabic face.
+        var fonts = __FONT_PRELOADS__;
+        var list = fonts[document.documentElement.lang === 'ar' ? 'ar' : 'en'] || [];
+        for (var i = 0; i < list.length; i++) {
+          var link = document.createElement('link');
+          link.rel = 'preload';
+          link.as = 'font';
+          link.type = 'font/woff2';
+          link.crossOrigin = 'anonymous';
+          link.href = list[i];
+          document.head.appendChild(link);
+        }
       })();
     </script>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap"
-    />
   </head>
   <body>
     <div id="root"></div>
