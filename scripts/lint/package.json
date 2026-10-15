@@ -1,0 +1,18 @@
+{
+  "name": "portfolio-lint",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "ESLint for the portfolio, isolated from the site's dependencies: typescript-eslint needs TypeScript's JS API (<6.1), which TypeScript 7 no longer ships. TypeScript 6 lives here only to parse; the site builds and type-checks with 7.",
+  "scripts": {
+    "lint": "cd ../.. && npm run lint"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.12.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.13.0",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.71.2"
+  }
+}
