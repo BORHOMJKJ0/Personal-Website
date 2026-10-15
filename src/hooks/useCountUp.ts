@@ -81,6 +81,7 @@ export function useCountUp({ delay = 0, trigger = 0 }: { delay?: number; trigger
       cancel();
       replayRef.current = () => {};
     };
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies -- a new `trigger` re-runs the effect: that is the replay
   }, [delay, trigger, reduced]);
 
   const settled = reduced || typeof IntersectionObserver === 'undefined';

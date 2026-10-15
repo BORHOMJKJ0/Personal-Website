@@ -254,14 +254,15 @@ Two `TODO:`s remain in the source:
 npm ci
 npm run build          # type-check + build; must pass with no warnings
 npm run typecheck
-npm run lint           # needs `npm ci --prefix scripts/lint` once (see below)
+npm run lint           # oxlint, zero warnings allowed
 npm run preview        # then check EN/AR x light/dark, and a project modal
 ```
 
-**Lint** lives in `scripts/lint/` with its own package.json: typescript-eslint
-needs TypeScript's JS API (<6.1), which TypeScript 7 no longer ships, so that
-folder carries TypeScript 6 purely as ESLint's parser. The site still builds
-and type-checks with 7. Rules are syntactic (no type info) plus React hooks.
+**Lint** is oxlint (`.oxlintrc.json`): correctness errors, suspicious
+warnings, React hooks rules (`react-hooks/rules-of-hooks`,
+`react-hooks/exhaustive-deps`), `--max-warnings 0`. ESLint was tried first and
+dropped: typescript-eslint needs TypeScript's JS API, which TypeScript 7 no
+longer ships. Inline `oxlint-disable-next-line` comments must say why.
 
 **Playwright scripts** (`scripts/capture-projects/`) launch the full Chromium
 build explicitly; the headless-shell build is often not installed.

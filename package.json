@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",
-    "lint": "node scripts/lint/node_modules/eslint/bin/eslint.js -c scripts/lint/eslint.config.js --max-warnings 0 src vite.config.ts",
+    "lint": "oxlint -c .oxlintrc.json --max-warnings 0 src vite.config.ts",
     "prebuild": "node scripts/generate-sitemap.mjs",
     "og": "node scripts/render-og.mjs",
     "sitemap": "node scripts/generate-sitemap.mjs"
@@ -27,6 +27,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
+    "oxlint": "^1.88.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
     "vite": "^8.3.2"

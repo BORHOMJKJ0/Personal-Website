@@ -232,4 +232,5 @@ export const projects: Project[] = [
 ];
 
 /** Newest first. The array above is already ordered; this keeps it honest. */
+// oxlint-disable-next-line unicorn/no-array-sort -- sorts a copy; toSorted() is ES2023, above the build target
 export const projectsByDate = [...projects].sort((a, b) => b.date.localeCompare(a.date));
