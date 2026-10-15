@@ -164,6 +164,26 @@ the FCP; self-hosting took local mobile Lighthouse from 87 to 96.
 - `scripts/capture-projects/check-fonts.mjs` asserts all of the above and
   CLS ≤ 0.02 on a throttled connection.
 
+## Identity: portrait, icons, social card
+
+- `public/images/profile.jpg` is the owner's real photo and the **master**:
+  never edit it. Everything else is generated from it by
+  `scripts/capture-projects/identity.mjs`: the hero sizes
+  (`profile-320/480.webp`), the owner-approved face crop for the small
+  avatars (`profile-face.jpg` + 64/128 WebP; crop box in the script), every
+  favicon/app icon from `public/favicon.svg`, and `public/og.png` from
+  `templates/og.html` (rendered in Chromium with the site's fonts).
+- Paths, srcsets and `sizes` live once, in `src/data/identity.ts`. React reads
+  them via `identity` in `profile.ts`; `vite.config.ts` reads them to preload
+  the hero portrait (the mobile LCP element) from the HTML. Image URLs carry a
+  hash of the whole `public/images/` folder.
+- Hero portrait and the navbar/footer avatars are circles. The favicon stays
+  an "OB" monogram (a face is unreadable at 16px), outlined from Space Grotesk
+  Bold by `monogram.py` so it renders identically on every OS.
+- `check-profile-images.mjs` verifies served bytes, versions, avatar
+  sharpness at the device pixel ratio, every head icon, the manifest and the
+  OG size.
+
 ## Gotchas worth remembering
 
 - **Modal overflow**: the dialog backdrop uses `items-start` plus `my-auto` on
@@ -240,13 +260,10 @@ Services in `src/data/services.ts` are drawn from the CV's TECHNICAL SKILLS and
 EXPERIENCE sections — they describe work the CV evidences, not an aspirational
 menu.
 
-Two `TODO:`s remain in the source:
-- `cv.ar` in `src/data/profile.ts` — `null`, which hides the Arabic CV button
-  rather than linking a missing file. Set it to `'cv-ar.pdf'` once that file
-  exists in `/public`.
-- `maps` in `src/data/orgs.ts` — no official logo could be sourced
-  (multiaidprograms.org is behind a bot challenge a real browser could not
-  clear either, and it is not on Wikimedia), so it renders an initials badge.
+One `TODO:` remains in the source: `cv.ar` in `src/data/profile.ts` is
+`null`, which hides the Arabic CV button rather than linking a missing file.
+Set it to `'cv-ar.pdf'` once that file exists in `/public`. (The MAPS logo in
+`src/data/orgs.ts` is the official mark, supplied by the owner.)
 
 ## Verifying changes
 

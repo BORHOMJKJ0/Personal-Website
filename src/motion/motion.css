@@ -144,7 +144,7 @@
   height: calc(100% + 12px);
   pointer-events: none;
 }
-.portrait-orbit rect {
+.portrait-orbit circle {
   stroke: var(--color-accent);
   stroke-width: 1;
   stroke-dasharray: 0.22 0.78;

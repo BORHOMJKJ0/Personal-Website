@@ -3,6 +3,9 @@
  * Anything that needs translating lives in src/i18n/locales/*.json instead.
  */
 import { projects } from './projects';
+import { assetUrl } from '@/lib/assets';
+import { identityImages } from './identity';
+
 export const profile = {
   email: 'hborhom89@gmail.com',
   phone: '+963 949 100 479',
@@ -40,5 +43,5 @@ export const heroStats = [
   { id: 'projects', to: projects.length, suffix: '' }, // counted from src/data/projects.ts
 ] as const;
 
-/** Photo in the hero. Vite versions this URL from the file contents at build time. */
-export const profilePhoto = `images/profile.jpg?v=${import.meta.env.VITE_PROFILE_PHOTO_VERSION}`;
+/** Portrait sizes for the hero and the small avatars; see data/identity.ts. */
+export const identity = identityImages(import.meta.env.VITE_PROFILE_PHOTO_VERSION, assetUrl);

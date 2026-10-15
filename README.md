@@ -27,7 +27,7 @@ npm run dev      # http://localhost:5173
 | `npm run build`     | Type-check, regenerate sitemap/robots, build to `dist/`   |
 | `npm run preview`   | Serve the production build locally                        |
 | `npm run typecheck` | Type-check only                                           |
-| `npm run og`        | Re-render `public/og.svg` to `public/og.png`              |
+| `npm run lint`      | oxlint, zero warnings                                     |
 | `npm run sitemap`   | Regenerate `public/sitemap.xml` and `public/robots.txt`   |
 
 Media and verification tooling lives in `scripts/capture-projects/` with its
@@ -145,10 +145,13 @@ All colour lives in `:root` / `.dark` at the top of
 follow. The comment block there lists the measured contrast ratios — keep
 foreground pairs at 4.5:1 or better for body text.
 
-### Changing the social card
+### Changing the photo, icons or social card
 
-Edit [public/og.svg](public/og.svg), then `npm run og`. Social crawlers do not
-render SVG, so `og.png` is the file the meta tags point at.
+Replace `public/images/profile.jpg` (square, face in the upper middle), then in
+`scripts/capture-projects/` run `node identity.mjs`. It regenerates the face
+crop and hero sizes, every favicon/app icon from `public/favicon.svg`, and
+`public/og.png` from `templates/og.html` (rendered in Chromium with the site's
+own fonts). The monogram itself is `python monogram.py` (fonttools).
 
 ---
 

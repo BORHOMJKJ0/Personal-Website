@@ -1,6 +1,7 @@
 import { ArrowUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Container } from './Section';
+import { ProfilePhoto } from './ProfilePhoto';
 import { useReveal } from '@/motion';
 
 export function Footer() {
@@ -11,9 +12,12 @@ export function Footer() {
     <footer ref={ref} className="reveal motion-cascade border-t border-line py-10">
       <Container>
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="text-xs leading-relaxed text-fg-subtle">
-            <p>{t('footer.builtBy')}</p>
-            <p className="mt-1">{t('footer.builtWith')}</p>
+          <div className="flex items-center gap-3">
+            <ProfilePhoto size={40} lazy />
+            <div className="text-xs leading-relaxed text-fg-subtle">
+              <p>{t('footer.builtBy')}</p>
+              <p className="mt-1">{t('footer.builtWith')}</p>
+            </div>
           </div>
 
           <a

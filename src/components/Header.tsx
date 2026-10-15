@@ -6,6 +6,7 @@ import { useScrollSpy } from '@/hooks/useScrollSpy';
 import type { Theme } from '@/hooks/useTheme';
 import { Container } from './Section';
 import { LanguageToggle, ThemeToggle } from './Toggles';
+import { ProfilePhoto } from './ProfilePhoto';
 import { STAGGER, staggerDelay } from '@/motion';
 
 export function Header({ theme, onToggleTheme }: { theme: Theme; onToggleTheme: () => void }) {
@@ -68,12 +69,7 @@ export function Header({ theme, onToggleTheme }: { theme: Theme; onToggleTheme: 
             className="group flex items-center gap-2.5 rounded-sm"
             aria-label={t('nav.brandAria')}
           >
-            <span
-              className="grid size-7 place-items-center rounded-md bg-accent font-mono text-[0.7rem] font-semibold text-accent-fg"
-              aria-hidden="true"
-            >
-              OB
-            </span>
+            <ProfilePhoto size={28} className="transition-shadow group-hover:ring-accent" />
             <span className="eyebrow hidden text-fg transition-colors group-hover:text-accent sm:inline">
               {t('hero.name')}
             </span>

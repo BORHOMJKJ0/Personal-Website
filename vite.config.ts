@@ -1,16 +1,20 @@
 import { fileURLToPath, URL } from 'node:url';
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import { identityImages } from './src/data/identity.ts';
 
-// Public assets keep their filenames. Change the portrait URL whenever its
-// contents change so a cached placeholder cannot survive a new deployment.
-const profilePhotoVersion = createHash('sha256')
-  .update(readFileSync(new URL('./public/images/profile.jpg', import.meta.url)))
-  .digest('hex')
-  .slice(0, 12);
+// Public assets keep their filenames. The portrait URLs carry a hash of the
+// whole images folder, so a cached old photo cannot survive a new deployment.
+const imagesDir = new URL('./public/images/', import.meta.url);
+const profilePhotoVersion = (() => {
+  const hash = createHash('sha256');
+  for (const name of readdirSync(imagesDir).toSorted()) hash.update(name).update(readFileSync(new URL(name, imagesDir)));
+  return hash.digest('hex').slice(0, 12);
+})();
+const { portrait } = identityImages(profilePhotoVersion);
 
 // Faces preloaded by the head script in index.html, per language: whatever
 // paints above the fold first (body text and the display name).
@@ -20,7 +24,8 @@ const PRELOAD_FONTS = {
 } as const;
 
 /**
- * Replaces `__FONT_PRELOADS__` in index.html with `{ en: [...], ar: [...] }`.
+ * Preloads for index.html. Replaces `__FONT_PRELOADS__` with
+ * `{ en: [...], ar: [...] }` and adds the hero portrait preload.
  * In a build the URLs are the content-hashed assets emitted for fonts.css, so
  * the preload and the @font-face request are the same cacheable file.
  */
@@ -41,7 +46,15 @@ function fontPreloads(): Plugin {
         const map = Object.fromEntries(
           Object.entries(PRELOAD_FONTS).map(([lang, files]) => [lang, files.map(resolve)]),
         );
-        return html.replace('__FONT_PRELOADS__', JSON.stringify(map));
+        // The hero portrait is the mobile LCP element, but React renders it, so
+        // the browser would find it only after the JS runs. Preload it here.
+        const portraitPreload =
+          `<link rel="preload" as="image" fetchpriority="high" href="${portrait.src}" ` +
+          `imagesrcset="${portrait.srcSet}" imagesizes="${portrait.sizes}" />`;
+        return html
+          .replace('__FONT_PRELOADS__', JSON.stringify(map))
+          .replace('</head>', `    ${portraitPreload}
+  </head>`);
       },
     },
   };

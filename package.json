@@ -10,7 +10,6 @@
     "typecheck": "tsc -b --noEmit",
     "lint": "oxlint -c .oxlintrc.json --max-warnings 0 src vite.config.ts",
     "prebuild": "node scripts/generate-sitemap.mjs",
-    "og": "node scripts/render-og.mjs",
     "sitemap": "node scripts/generate-sitemap.mjs"
   },
   "dependencies": {
@@ -21,7 +20,6 @@
     "react-i18next": "^17.0.15"
   },
   "devDependencies": {
-    "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^26.6.4",
     "@types/react": "^19.3.0",
